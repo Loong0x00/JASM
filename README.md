@@ -1,12 +1,14 @@
-# JASM - Just Another Skin Manager
+# JASM — Just Another Skin Manager · Linux / Avalonia fork
 
-> 原项目地址：[https://github.com/Jorixon/JASM](https://github.com/Jorixon/JASM)
+> **本仓库是 JASM 的 Linux 移植 fork**：把界面从 WinUI 3（锁死 Windows）用 [Avalonia](https://avaloniaui.net/) 重写，**在 Linux 上原生运行、无需 Wine**；跨平台逻辑库 `GIMI-ModManager.Core` 原样复用，只替换了界面层。
+>
+> **传承**：原项目 [Jorixon/JASM](https://github.com/Jorixon/JASM)（GPL-3.0，已停更）→ 中文 fork [Moonholder/JASM](https://github.com/Moonholder/JASM)（本 fork 基于它，增加了游戏与中文）→ **本仓库：Avalonia 跨平台前端**。
+
+JASM 是一个**皮肤管理器**：帮你在磁盘上按角色整理、启用/禁用 3Dmigoto / XXMI 模组。它**不向游戏注入内容**——注入由 XXMI / 3Dmigoto 加载器完成。支持原神（GIMI）、崩坏：星穹铁道（SRMI）、绝区零（ZZMI）、鸣潮（WWMI）、明日方舟：终末地（EFMI）五个游戏。
 
 ---
 
-## 🐧 Linux 原生版（本 fork 新增）
-
-**本 fork 把 JASM 的界面从 WinUI 3（锁死 Windows）用 [Avalonia](https://avaloniaui.net/) 重写了一份，可以在 Linux 上原生运行，无需 Wine。** 跨平台逻辑库 `GIMI-ModManager.Core` 原样复用，只替换了界面层。
+## 🐧 Linux 版（本 fork）
 
 **构建 / 运行**（需 [.NET 10 SDK](https://dotnet.microsoft.com/download)）：
 
@@ -17,95 +19,69 @@ dotnet run -c Release
 dotnet publish -c Release -r linux-x64 --self-contained false -o out && ./out/JASM.Avalonia
 ```
 
-- **功能**：5 个游戏（GIMI/SRMI/ZZMI/WWMI/EFMI）、游戏内切换、角色网格（分类/元素·武器筛选/排序/置顶/隐藏/搜索）、角色详情两栏（启用禁用·多选批量·移动·ModPane 封面/信息/keyswap 编辑）、Mod 安装器（文件夹 + .zip/.rar/.7z）、预设、模组总览、导出、主题、中/英语言。
-- **设置目录**：Linux 下在 `~/.local/share/JASM/`（不是 Windows 的 `%localappdata%\JASM`）。删掉即重走首次设置。
-- **Windows 专属、Linux 不适用的部分**：Elevator 提权进程、F10 向游戏发键刷新、UAC/管理员相关的 FAQ —— Linux 下启用/禁用直接改文件夹名（加/去 `DISABLED_` 前缀）即可，不需要 Elevator；删除走 XDG 回收站。
-- **未移植**（重/联网/niche）：GameBanana 内置浏览器、自动更新检查、自定义角色创建 UI、命令运行器。
-- 完整说明见 [`src/GIMI-ModManager.Avalonia/README.md`](src/GIMI-ModManager.Avalonia/README.md)。
+首次启动会走设置向导：选游戏 + 指定 Mods 文件夹（XXMI/3Dmigoto 文件夹可留空）。
 
-> ⚠️ **下方的原版说明是针对 Windows 的 WinUI 版本**（`.exe` 下载、Windows App SDK、Elevator、`%localappdata%` 路径、UIPI 拖拽问题等）。**Linux 用户请以上面这一段为准**，下面的功能/快捷键/FAQ 大多仍适用，但凡涉及 `.exe`/提权/Windows 路径的部分请忽略。
+**功能**
 
----
+- 5 个游戏（GIMI/SRMI/ZZMI/WWMI/EFMI）+ 游戏内切换（切换走进程重启，与原版行为一致）
+- 角色网格：分类标签（角色/武器/NPC/物件）、元素·武器筛选、排序、置顶、隐藏角色、mod 数徽章、搜索
+- 角色详情两栏（mod 列表 + ModPane）：启用/禁用（改 `DISABLED_` 前缀）、多选批量启用/禁用/删除/移动、页内搜索
+- ModPane：封面图查看+设置、名字/作者/链接/描述编辑、按键切换（keyswap `.ini`）编辑器、复制路径
+- Mod 安装器：从**文件夹**或 **`.zip`/`.rar`/`.7z` 压缩包**导入 + 目标角色选择
+- 预设（建自当前/应用/重命名/复制/删/只读）、模组总览、导出全部模组、主题（跟随系统/浅色/深色）、语言（中/英）
 
-未处理的异常会写入 JASM 应用程序目录中的 Logs 文件夹中。
+**说明**
 
-## 功能
-- 精美的用户界面 👀
-- 可将文件直接拖放到应用程序中，支持加密压缩包，管理常用密码
-- 自动将未分类的模组分类到相应角色的文件夹中
-- 在不同角色之间移动模组
-- 可直接从应用程序启动 3Dmigto 启动器和 / 或某款游戏
-- 应用程序会监控角色文件夹，若文件夹中的皮肤有增减，会自动更新
-- 可查看编辑模组的按键切换绑定
-- 支持在角色管理页面创建自定义角色
-- 将 JASM 管理的所有模组导出（复制）到用户指定的文件夹
-- 支持自动刷新模组至游戏及同步模组切换项
-- 使用 F10 键或应用程序中的刷新按钮刷新模组。（需要一个提升权限的辅助进程，详见下文说明）
+- **设置目录**：`~/.local/share/JASM/`（删掉即重走首次设置）。
+- **删除模组**：进 freedesktop XDG 回收站，可恢复。
+- **无需 Elevator**：Linux 下启用/禁用直接改文件夹名（加/去 `DISABLED_` 前缀）即生效，不需要 Windows 版那个提权辅助进程。
+- 完整开发/架构说明见 [`src/GIMI-ModManager.Avalonia/README.md`](src/GIMI-ModManager.Avalonia/README.md)。
 
-## 快捷键
-- “空格键” - 在角色视图中，切换所选模组的启用 / 禁用状态
-- “F10” - 如果提升权限的辅助进程以及某款游戏正在运行，可刷新游戏中的模组
-- “F5” - 在角色视图中，从磁盘刷新角色的模组
-- “CTRL + F” - 在角色概览界面，聚焦到搜索栏
-- “Esc” - 在角色视图中，返回角色概览界面
-- “F1” - 在角色视图中，打开游戏内可选皮肤
-- “CTRL + O” - 在角色详细视图添加压缩包形式的模组
-- “CTRL + V” - 在角色详细视图从剪贴板粘贴模组（GB链接/文件夹/压缩包）
+**尚未移植**（重 / 联网 / niche）：GameBanana 内置浏览器、自动查 mod 更新、自定义角色创建、命令运行器、拖放安装、加密压缩包密码管理、从应用内启动游戏 / 3Dmigoto（Linux 走 Proton，逻辑不同）、F10 向游戏发键刷新。
 
-## 下载
-最新版本可从 GameBanana 或者[Releases](https://github.com/Moonholder/JASM/releases) 页面下载。要启动应用程序，请在 ```JASM/``` 文件夹中运行 ```JASM - Just Another Skin Manager.exe```，建议为此创建一个快捷方式。
+**通用 Tips**
 
-> 🐧 以上是 **Windows 版**。**Linux 用户**：Releases 里的 `.exe` 只能在 Windows 跑；Linux 请见顶部「[Linux 原生版](#-linux-原生版本-fork-新增)」一节，从源码构建运行（无需 Wine）。
-
-## 系统要求
-- Windows 10 1809 版本或更高版本（[据称](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/))
-- ~~[.NET 桌面运行时](https://aka.ms/dotnet-core-applaunch?missing_runtime=true&arch=x64&rid=win10-x64&apphost_version=9.0.0&gui=true)~~
-- ~~[Windows App SDK](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/downloads)~~
-- [WebP 映像扩展](https://apps.microsoft.com/detail/9pg2dk419drg?hl=zh-CN&gl=CN) (如果有角色图无法显示可安装)
-
-如果未下载这些，应用程序会提示你下载必要的依赖项并提供相应链接。
-
-### 提升权限的辅助进程
-Elevator进程是一个小程序，可从应用程序中以提升权限的方式启动。
-它用于向游戏发送 F10 键来刷新模组。在 JASM 中启用和禁用模组也会自动刷新模组。这是通过命名管道实现的。  
-该进程不会监听按键绑定，它只等待来自应用程序的简单 “1” 命令，然后就会向游戏发送 F10 键。  
-
-
-使用了[H.InputSimulator](https://github.com/HavenDV/H.InputSimulator) 库来发送键盘输入。
-
-## 常见问题
-
-
-
-#### 为什么角色只能启用一个模组了?  
-在角色详情页面左上角点击"**显示**"按钮， 取消选中"**单选模式**"
-
-#### 为什么角色概览页面的角色头像左上角有个黄色叹号?如何取消它?  
-侧边栏点击角色管理，搜索对应角色，勾选"允许启用多个模组"，这只是表示这个角色启用多个模组不会有警告信息了
-
-#### 为什么我不能拖拽模组文件到角色头像上?  
-这可能是因为意外以管理员权限运行程序，由于UIPI隔离机制导致，您可以尝试在角色详情页面CTRL + O 添加压缩包形式的模组，或者在左上角点击"模组"添加
-
-#### 如何查看模组的按键切换绑定?   
-JASM会识别Mod文件夹中的ini文件，并提取其中的按键切换信息，您可以在角色详细视图右下角的按键切换面板中编辑。
-
-#### Tips
-* 应用程序设置存储在这里```C:\Users\<username>\AppData\Local\JASM\ApplicationData```
-* Mod 特定设置存储在 mod 文件夹中，并以```.JASM_``` 为前缀。导出 mod 时，可以忽略这些文件。  
-* JASM会优先识别【```cover```, ```.jasm_cover```, ```preview```】为前缀的图片作为模组的预览图。
+- 每个 mod 的设置存在其文件夹内、以 `.JASM_` 前缀命名，导出时可忽略。
+- 预览图优先识别 `cover` / `.jasm_cover` / `preview` 前缀的图片。
+- 查看/编辑模组按键切换（keyswap）：在角色详情右侧 ModPane 的按键切换面板里。
 
 ---
-### JASM 不能启动
 
+## 🪟 原版 Windows（WinUI）说明
 
-如果 JASM 之前能正常工作，一个可能的修复方法是删除 JASM 的用户设置文件夹。这会清除你的设置，比如预设、文件夹路径等。不过，你的模组以及模组设置（如自定义显示名称和图片）不会受到影响。JASM 设置存储在以下位置：`%localappdata%\JASM` / `C:\Users\<username>\AppData\Local\JASM`。你可以先尝试删除每个游戏的设置文件夹，看看是否有帮助，或者也可以直接删除整个文件夹。预设存储在预设文件夹内。最好先备份一下。
+> 以下是上游 [Moonholder/JASM](https://github.com/Moonholder/JASM) 的 **Windows / WinUI 版本**说明，保留供 Windows 用户参考。**Linux 用户请用上面的 Linux 版**——以下 `.exe`、Windows App SDK、Elevator、`%localappdata%`、单选模式、命令行、内存泄漏等**均为 Windows 版专属**，对本 fork 的 Avalonia 版不适用。
 
-### XXMI 兼容
+### 下载（Windows）
 
-如果你清楚自己在做什么，并且希望能够通过 JASM 在 XXMI 中启动游戏，在点击```启动游戏```弹出的窗口中点击```创建高级命令```，具体如下:
-![image](https://github.com/user-attachments/assets/2b0d48a7-25d9-46c9-9102-313632445181)
+最新版本可从 GameBanana 或 [Releases](https://github.com/Moonholder/JASM/releases) 下载。运行 `JASM/` 文件夹中的 `JASM - Just Another Skin Manager.exe`，建议创建一个快捷方式。
 
-### 更多参数参考
+### 系统要求（Windows）
+
+- Windows 10 1809 版本或更高
+- [WebP 映像扩展](https://apps.microsoft.com/detail/9pg2dk419drg?hl=zh-CN&gl=CN)（如果有角色图无法显示可安装）
+
+### 快捷键（Windows 版）
+
+- **空格** — 切换所选模组的启用/禁用
+- **F10** — 刷新游戏中的模组（需 Elevator 提权进程 + 游戏正在运行）
+- **F5** — 从磁盘刷新角色的模组；**Ctrl+F** — 聚焦搜索栏；**Esc** — 返回角色概览
+- **F1** — 打开游戏内可选皮肤；**Ctrl+O** — 添加压缩包模组；**Ctrl+V** — 从剪贴板粘贴模组（GB 链接/文件夹/压缩包）
+
+### Elevator 提权进程（Windows 版）
+
+Elevator 是个小程序，通过命名管道接收应用发来的“1”命令后，向游戏发送 F10 键来刷新模组（在 JASM 中启用/禁用模组也会自动刷新）。用 [H.InputSimulator](https://github.com/HavenDV/H.InputSimulator) 发送键盘输入。
+
+### 常见问题（Windows 版）
+
+- **角色只能启用一个模组了？** → 角色详情左上角点“**显示**”，取消勾选“**单选模式**”。
+- **头像左上有黄色叹号？** → 侧边栏“角色管理”里搜到该角色，勾“允许启用多个模组”（仅去掉多 mod 的警告）。
+- **拖不了模组到头像上？** → 多半是以管理员权限运行导致 UIPI 隔离；改用 `Ctrl+O` 加压缩包，或左上“模组”添加。
+- **JASM 打不开？** → 删除设置文件夹 `%localappdata%\JASM`（会清预设/路径等设置，**不影响模组**；建议先备份）。可先删单个游戏的设置文件夹试。
+
+### XXMI 兼容 / 从应用启动游戏（Windows 版）
+
+在“启动游戏”弹窗中点“创建高级命令”，参数示例：
+
 ```powershell
 --nogui --xxmi GIMI
 --nogui --xxmi ZZMI
@@ -114,24 +90,20 @@ JASM会识别Mod文件夹中的ini文件，并提取其中的按键切换信息�
 --nogui --xxmi EFMI
 ```
 
-### 缺失图像
-你很可能正在使用 Windows 10 系统，并且缺少[Webp 图像扩展程序](https://apps.microsoft.com/detail/9pg2dk419drg?hl=zh-CN&gl=CN)。
+### 命令行（Windows 版）
 
-### 命令行支持
-
-JASM 具备基本的命令行支持。截至目前，唯一支持的功能是直接启动进入选定的游戏。如果你希望看到更多命令行选项，欢迎针对你建议的使用场景提出问题。
-
-有关更多信息，请参阅 --help。
-
-Powershell：
 ```powershell
 .\'JASM - Just Another Skin Manager.exe' --help
-# 示例：如果当前实例正在运行，则关闭它并使用选定的游戏启动 JASM
+# 示例：关闭当前实例并用选定游戏启动
 .\'JASM - Just Another Skin Manager.exe' --switch --game genshin
 ```
 
-### 内存使用率高
+### 内存占用高（Windows 版）
 
-每切换一次页面就会分配大量内存且不会释放，这会导致在页面间快速切换时应用程序很快就会占用超过 1GB 的内存。这不是一个能快速解决的问题。如果你发现程序运行变慢，我建议重启应用程序。
+WinUI 在页面导航时疑似泄漏（大多是非托管内存），快速翻页会很快超过 1GB，建议重启应用。**本 fork 的 Avalonia 版不使用 WinUI，无此问题。**
 
-根据调查，WinUI 在导航页面时似乎可能有内存泄漏。大多数内存都是非托管内存，这意味着内存分析器不会有太大帮助。
+---
+
+## 许可 / License
+
+**GNU GPL-3.0**，与上游 JASM 一致。原始设计、内置游戏资产数据、核心模组管理逻辑归上游作者（Jorixon / Moonholder）所有；本 fork 仅把锁死 Windows 的 WinUI 前端替换为跨平台的 Avalonia 前端。
