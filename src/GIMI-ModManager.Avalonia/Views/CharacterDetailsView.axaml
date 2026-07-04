@@ -4,17 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:GIMI_ModManager.Avalonia.ViewModels"
              xmlns:items="using:GIMI_ModManager.Avalonia.ViewModels.Items"
-             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="700"
              x:Class="GIMI_ModManager.Avalonia.Views.CharacterDetailsView"
              x:DataType="vm:CharacterDetailsViewModel"
              x:Name="Root">
 
     <Grid RowDefinitions="Auto,Auto,*" Margin="24,16,24,0">
         <!-- Header -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto" Margin="0,0,0,16">
-            <Button Grid.Column="0" Content="← 返回" Command="{Binding GoBackCommand}"
-                    VerticalAlignment="Center" />
-            <Border Grid.Column="1" Width="56" Height="56" CornerRadius="28" ClipToBounds="True"
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,Auto,*,Auto" Margin="0,0,0,12">
+            <Button Grid.Column="0" Content="← 返回" Command="{Binding GoBackCommand}" VerticalAlignment="Center" />
+            <Border Grid.Column="1" Width="52" Height="52" CornerRadius="26" ClipToBounds="True"
                     Margin="16,0,12,0" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
                 <Image Source="{Binding CharacterImagePath, Converter={StaticResource PathToBitmap}}"
                        Stretch="UniformToFill" />
@@ -26,67 +25,79 @@
                 </TextBlock>
             </StackPanel>
             <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                <Button Content="添加模组" Classes="accent" Command="{Binding AddModCommand}" />
+                <Button Content="添加文件夹" Classes="accent" Command="{Binding AddModCommand}" />
+                <Button Content="安装压缩包" Command="{Binding InstallArchiveCommand}" />
                 <Button Content="刷新" Command="{Binding RefreshCommand}" />
                 <Button Content="打开角色文件夹" Command="{Binding OpenCharacterFolderCommand}" />
+                <Button Content="{Binding HideCharacterLabel}" Command="{Binding ToggleHideCharacterCommand}"
+                        IsVisible="{Binding CanHideCharacter}" />
             </StackPanel>
         </Grid>
 
-        <!-- Empty state -->
-        <TextBlock Grid.Row="1" IsVisible="{Binding IsEmpty}" Margin="0,24"
-                   HorizontalAlignment="Center"
-                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                   Text="该角色还没有模组。点击右上角“添加模组”从文件夹导入。" />
+        <!-- Search + batch toolbar -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,10">
+            <TextBox Grid.Column="0" Text="{Binding ModSearchText}" Watermark="搜索模组…" Width="240" />
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center"
+                        IsVisible="{Binding HasSelection}">
+                <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                    <Run Text="已选 " /><Run Text="{Binding SelectedCount}" />
+                </TextBlock>
+                <Button Content="启用" Command="{Binding EnableSelectedCommand}" />
+                <Button Content="禁用" Command="{Binding DisableSelectedCommand}" />
+                <Button Content="移动到…" Command="{Binding MoveSelectedCommand}" />
+                <Button Content="删除" Command="{Binding DeleteSelectedCommand}" />
+                <Button Content="清除选择" Command="{Binding ClearSelectionCommand}" />
+            </StackPanel>
+        </Grid>
 
-        <!-- Mod list -->
-        <ScrollViewer Grid.Row="2">
-            <ItemsControl ItemsSource="{Binding Mods}" Margin="0,0,0,24">
-                <ItemsControl.ItemTemplate>
+        <!-- Body: mod list + detail pane -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+            <!-- Empty state -->
+            <TextBlock Grid.Column="0" IsVisible="{Binding IsEmpty}" Margin="0,24" HorizontalAlignment="Center"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       Text="该角色还没有模组。点击右上角“添加模组”从文件夹导入。" />
+
+            <ListBox Grid.Column="0" ItemsSource="{Binding Mods}" SelectedItem="{Binding ActiveMod}"
+                     Background="Transparent" BorderThickness="0" Padding="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="items:ModRowItem">
-                        <Border Margin="0,0,0,8" Padding="14,10" CornerRadius="8"
-                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
-                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
-                            <Grid ColumnDefinitions="Auto,*,Auto">
-                                <!-- Status dot: green when enabled, grey when disabled -->
-                                <Panel Grid.Column="0" Margin="0,0,14,0" VerticalAlignment="Center">
-                                    <Ellipse Width="12" Height="12" IsVisible="{Binding IsEnabled}"
-                                             Fill="{DynamicResource SystemFillColorSuccessBrush}" />
-                                    <Ellipse Width="12" Height="12" IsVisible="{Binding !IsEnabled}"
-                                             Fill="{DynamicResource SystemFillColorNeutralBrush}" />
-                                </Panel>
-
-                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="15"
-                                               TextTrimming="CharacterEllipsis" />
-                                    <StackPanel Orientation="Horizontal" Spacing="10">
-                                        <TextBlock Text="{Binding StatusText}" FontSize="12"
-                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                                        <TextBlock Text="{Binding Author, StringFormat='作者: {0}'}" FontSize="12"
-                                                   IsVisible="{Binding Author, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                                        <TextBlock Text="{Binding FolderName}" FontSize="12"
-                                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                                   TextTrimming="CharacterEllipsis" MaxWidth="260" />
-                                    </StackPanel>
+                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" Margin="0,2">
+                            <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" VerticalAlignment="Center"
+                                      Margin="0,0,8,0" />
+                            <Panel Grid.Column="1" Margin="0,0,12,0" VerticalAlignment="Center">
+                                <Ellipse Width="10" Height="10" IsVisible="{Binding IsEnabled}"
+                                         Fill="{DynamicResource SystemFillColorSuccessBrush}" />
+                                <Ellipse Width="10" Height="10" IsVisible="{Binding !IsEnabled}"
+                                         Fill="{DynamicResource SystemFillColorNeutralBrush}" />
+                            </Panel>
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"
+                                           TextTrimming="CharacterEllipsis" />
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="{Binding StatusText}" FontSize="12"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                    <TextBlock Text="{Binding Author, StringFormat='作者: {0}'}" FontSize="12"
+                                               IsVisible="{Binding Author, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                                 </StackPanel>
-
-                                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                    <ToggleSwitch IsChecked="{Binding IsEnabled, Mode=OneWay}"
-                                                  OnContent="已启用" OffContent="已禁用"
-                                                  Command="{Binding #Root.((vm:CharacterDetailsViewModel)DataContext).ToggleModCommand}"
-                                                  CommandParameter="{Binding}" />
-                                    <Button Content="文件夹"
-                                            Command="{Binding #Root.((vm:CharacterDetailsViewModel)DataContext).OpenModFolderCommand}"
-                                            CommandParameter="{Binding}" />
-                                    <Button Content="删除"
-                                            Command="{Binding #Root.((vm:CharacterDetailsViewModel)DataContext).DeleteModCommand}"
-                                            CommandParameter="{Binding}" />
-                                </StackPanel>
-                            </Grid>
-                        </Border>
+                            </StackPanel>
+                            <ToggleSwitch Grid.Column="3" IsChecked="{Binding IsEnabled, Mode=OneWay}"
+                                          OnContent="" OffContent="" VerticalAlignment="Center"
+                                          Command="{Binding #Root.((vm:CharacterDetailsViewModel)DataContext).ToggleModCommand}"
+                                          CommandParameter="{Binding}" />
+                        </Grid>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- Detail pane -->
+            <Border Grid.Column="1" Width="380" Margin="16,0,0,0" CornerRadius="8" Padding="0"
+                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1"
+                    IsVisible="{Binding Pane.IsVisible}">
+                <ContentControl Content="{Binding Pane}" />
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

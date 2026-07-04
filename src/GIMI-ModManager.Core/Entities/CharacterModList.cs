@@ -65,7 +65,16 @@ public sealed class CharacterModList : ICharacterModList
         _selfWatcher.Deleted += OnSelfFolderDeleted;
         _selfWatcher.Error += OnWatcherError;
 
-        _selfWatcher.EnableRaisingEvents = true;
+        try
+        {
+            _selfWatcher.EnableRaisingEvents = true;
+        }
+        catch (Exception e)
+        {
+            // On Linux, fs.inotify.max_user_instances can be exhausted with many characters.
+            // Degrade gracefully — the folder just won't be live-watched (use manual refresh).
+            _logger?.Warning(e, "Could not enable parent FileSystemWatcher for {Path}", absPath);
+        }
 
         if (!Directory.Exists(AbsModsFolderPath))
             return;
@@ -118,7 +127,7 @@ public sealed class CharacterModList : ICharacterModList
     }
 
 
-    private FileSystemWatcher CreateModWatcher()
+    private FileSystemWatcher? CreateModWatcher()
     {
         var watcher = new FileSystemWatcher(AbsModsFolderPath);
         watcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.CreationTime;
@@ -128,7 +137,19 @@ public sealed class CharacterModList : ICharacterModList
         watcher.Error += OnWatcherError;
 
         watcher.IncludeSubdirectories = false;
-        watcher.EnableRaisingEvents = true;
+        try
+        {
+            watcher.EnableRaisingEvents = true;
+        }
+        catch (Exception e)
+        {
+            // See constructor: gracefully skip live watching when inotify limits are hit on Linux.
+            _logger?.Warning(e, "Could not enable FileSystemWatcher for {Path}; live updates disabled",
+                AbsModsFolderPath);
+            watcher.Dispose();
+            return null;
+        }
+
         return watcher;
     }
 
@@ -479,17 +500,29 @@ public enum ModFolderChangeType
 
 public class DisableWatcher : IDisposable
 {
-    private readonly FileSystemWatcher _watcher;
+    private readonly FileSystemWatcher? _watcher;
 
-    public DisableWatcher(FileSystemWatcher watcher)
+    // The watcher may be null when live folder watching could not be enabled (e.g. the Linux
+    // inotify instance limit was exhausted). In that case this is a no-op scope.
+    public DisableWatcher(FileSystemWatcher? watcher)
     {
-        ArgumentNullException.ThrowIfNull(watcher);
         _watcher = watcher;
-        _watcher.EnableRaisingEvents = false;
+        SetEnabled(false);
     }
 
-    public void Dispose()
+    public void Dispose() => SetEnabled(true);
+
+    private void SetEnabled(bool enabled)
     {
-        _watcher.EnableRaisingEvents = true;
+        if (_watcher is null)
+            return;
+        try
+        {
+            _watcher.EnableRaisingEvents = enabled;
+        }
+        catch (Exception)
+        {
+            // Watcher backing resource may be unavailable on constrained systems; ignore.
+        }
     }
 }

@@ -23,8 +23,18 @@ public partial class ShellView : UserControl
         }
 
         var tag = (e.InvokedItemContainer as NavigationViewItem)?.Tag as string;
-        if (tag == "characters")
-            vm.NavigateCharactersCommand.Execute(null);
+        switch (tag)
+        {
+            case "characters":
+                vm.NavigateCharactersCommand.Execute(null);
+                break;
+            case "presets":
+                vm.NavigatePresetsCommand.Execute(null);
+                break;
+            case "overview":
+                vm.NavigateOverviewCommand.Execute(null);
+                break;
+        }
     }
 
     private void OnBackRequested(object? sender, NavigationViewBackRequestedEventArgs e)

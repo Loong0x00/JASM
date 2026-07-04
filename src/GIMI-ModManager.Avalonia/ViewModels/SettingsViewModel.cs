@@ -7,6 +7,7 @@ using GIMI_ModManager.Avalonia.Services;
 using GIMI_ModManager.Avalonia.Services.Dialogs;
 using GIMI_ModManager.Avalonia.Services.Navigation;
 using GIMI_ModManager.Avalonia.Services.Settings;
+using GIMI_ModManager.Core.Contracts.Services;
 using GIMI_ModManager.Core.GamesService;
 using Serilog;
 
@@ -15,10 +16,12 @@ namespace GIMI_ModManager.Avalonia.ViewModels;
 public partial class SettingsViewModel : ViewModelBase, INavigationAware
 {
     private const string ThemeSettingKey = "AppTheme";
+    public const string LanguageSettingKey = "AppLanguage";
 
     private readonly ILocalSettingsService _localSettings;
     private readonly SelectedGameService _selectedGameService;
     private readonly IGameService _gameService;
+    private readonly ISkinManagerService _skinManagerService;
     private readonly IFilePickerService _filePicker;
     private readonly IDialogService _dialogs;
     private readonly INotificationService _notifications;
@@ -26,23 +29,30 @@ public partial class SettingsViewModel : ViewModelBase, INavigationAware
 
     private bool _suppressThemeApply;
 
+    [ObservableProperty] private bool _isExporting;
+
     public IReadOnlyList<GameOption> Games { get; } = GameOption.All;
     public IReadOnlyList<string> Themes { get; } = new[] { "跟随系统", "浅色", "深色" };
+    public IReadOnlyList<string> Languages { get; } = new[] { "中文", "English" };
+
+    private bool _suppressLanguageApply;
 
     [ObservableProperty] private GameOption _selectedGame = GameOption.All[0];
     [ObservableProperty] private string _selectedTheme = "跟随系统";
+    [ObservableProperty] private string _selectedLanguage = "中文";
     [ObservableProperty] private string? _modsFolderPath;
     [ObservableProperty] private string? _xxmiFolderPath;
     [ObservableProperty] private string _gameName = string.Empty;
     [ObservableProperty] private string _appVersion = "2.29.1";
 
     public SettingsViewModel(ILocalSettingsService localSettings, SelectedGameService selectedGameService,
-        IGameService gameService, IFilePickerService filePicker, IDialogService dialogs,
-        INotificationService notifications, ILogger logger)
+        IGameService gameService, ISkinManagerService skinManagerService, IFilePickerService filePicker,
+        IDialogService dialogs, INotificationService notifications, ILogger logger)
     {
         _localSettings = localSettings;
         _selectedGameService = selectedGameService;
         _gameService = gameService;
+        _skinManagerService = skinManagerService;
         _filePicker = filePicker;
         _dialogs = dialogs;
         _notifications = notifications;
@@ -69,6 +79,29 @@ public partial class SettingsViewModel : ViewModelBase, INavigationAware
             _ => "跟随系统"
         };
         _suppressThemeApply = false;
+
+        var savedLang = await _localSettings.ReadSettingAsync<string>(LanguageSettingKey, SettingScope.App);
+        _suppressLanguageApply = true;
+        SelectedLanguage = savedLang == "en" ? "English" : "中文";
+        _suppressLanguageApply = false;
+    }
+
+    partial void OnSelectedLanguageChanged(string value)
+    {
+        if (_suppressLanguageApply)
+            return;
+
+        var code = value == "English" ? "en" : "zh-cn";
+        _ = ApplyLanguageAsync(code);
+    }
+
+    private async Task ApplyLanguageAsync(string code)
+    {
+        await _localSettings.SaveSettingAsync(LanguageSettingKey, code, SettingScope.App);
+        var restart = await _dialogs.ShowConfirmAsync("切换语言",
+            "语言更改将在重启后生效。现在重启吗？", "重启", "稍后");
+        if (restart)
+            AppRestartService.Restart();
     }
 
     partial void OnSelectedThemeChanged(string value)
@@ -125,11 +158,25 @@ public partial class SettingsViewModel : ViewModelBase, INavigationAware
     [RelayCommand]
     private async Task SwitchGame()
     {
-        if (SelectedGame.InternalName == await _selectedGameService.GetSelectedGameAsync())
+        var current = await _selectedGameService.GetSelectedGameAsync();
+        if (SelectedGame.InternalName == current)
             return;
 
+        var configured = await _selectedGameService.IsJasmInitializedForGameAsync(SelectedGame.InternalName);
+        var message = configured
+            ? $"切换到 {SelectedGame.DisplayName} 需要重启 JASM。现在重启吗？"
+            : $"{SelectedGame.DisplayName} 还没有配置过，重启后将进入首次设置。现在重启吗？";
+
+        var restart = await _dialogs.ShowConfirmAsync("切换游戏", message, "重启", "取消");
+        if (!restart)
+        {
+            // Revert the combo selection.
+            SelectedGame = Games.FirstOrDefault(g => g.InternalName == current) ?? Games[0];
+            return;
+        }
+
         await _selectedGameService.SetSelectedGame(SelectedGame.InternalName);
-        _notifications.ShowInfo("已切换游戏", $"已切换到 {SelectedGame.DisplayName}。请重启 JASM 以加载该游戏。");
+        AppRestartService.Restart();
     }
 
     [RelayCommand]
@@ -141,4 +188,36 @@ public partial class SettingsViewModel : ViewModelBase, INavigationAware
 
     [RelayCommand]
     private void OpenAppDataFolder() => PlatformService.OpenInFileManager(_localSettings.ApplicationDataFolder);
+
+    [RelayCommand]
+    private async Task ExportMods()
+    {
+        var dest = await _filePicker.PickFolderAsync("选择导出目标文件夹");
+        if (dest is null)
+            return;
+
+        IsExporting = true;
+        try
+        {
+            var lists = _skinManagerService.CharacterModLists.ToList();
+            // zip:true is not implemented in Core; export as a folder tree instead.
+            await Task.Run(() => _skinManagerService.ExportMods(
+                lists, dest,
+                removeLocalJasmSettings: false,
+                zip: false,
+                keepCharacterFolderStructure: true,
+                setModStatus: SetModStatus.KeepCurrent));
+
+            _notifications.ShowSuccess("导出完成", $"所有模组已导出到 {dest}");
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e, "Failed to export mods");
+            _notifications.ShowError("导出失败", e.Message);
+        }
+        finally
+        {
+            IsExporting = false;
+        }
+    }
 }

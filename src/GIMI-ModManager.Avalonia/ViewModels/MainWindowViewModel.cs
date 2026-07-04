@@ -39,13 +39,17 @@ public partial class MainWindowViewModel : ViewModelBase, IRecipient<StartupComp
             else
             {
                 _logger.Information("JASM not configured for {Game}; showing first-time setup.", game);
-                Content = _serviceProvider.GetRequiredService<StartupViewModel>();
+                var startup = _serviceProvider.GetRequiredService<StartupViewModel>();
+                await startup.InitializeAsync();
+                Content = startup;
             }
         }
         catch (Exception e)
         {
             _logger.Error(e, "Startup initialization failed; falling back to first-time setup.");
-            Content = _serviceProvider.GetRequiredService<StartupViewModel>();
+            var startup = _serviceProvider.GetRequiredService<StartupViewModel>();
+            await startup.InitializeAsync();
+            Content = startup;
         }
         finally
         {

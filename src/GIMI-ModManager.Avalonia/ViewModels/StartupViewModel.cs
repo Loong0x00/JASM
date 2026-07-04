@@ -41,6 +41,20 @@ public partial class StartupViewModel : ViewModelBase
         _logger = logger.ForContext<StartupViewModel>();
     }
 
+    /// <summary>Pre-selects whichever game is currently active (e.g. after a switch-game restart).</summary>
+    public async Task InitializeAsync()
+    {
+        try
+        {
+            var game = await _selectedGameService.GetSelectedGameAsync();
+            SelectedGame = Games.FirstOrDefault(g => g.InternalName == game) ?? Games[0];
+        }
+        catch (Exception e)
+        {
+            _logger.Warning(e, "Failed to pre-select game on startup screen");
+        }
+    }
+
     [RelayCommand]
     private async Task BrowseModsFolder()
     {

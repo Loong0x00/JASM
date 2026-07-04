@@ -44,7 +44,10 @@ public class ArchiveService
         }
         else
         {
-            var extractor = Extractor(extractedFolder);
+            // Select the extractor by the ARCHIVE's extension, not the destination folder.
+            // The SharpCompress path (used off Windows) switches on the extension, so passing the
+            // extension-less destination folder here silently returned no extractor on Linux.
+            var extractor = Extractor(archive.FullName);
             extractor?.Invoke(archive.FullName, extractedFolder);
         }
 

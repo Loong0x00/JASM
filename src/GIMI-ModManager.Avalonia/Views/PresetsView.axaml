@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GIMI_ModManager.Avalonia.ViewModels"
+             xmlns:items="using:GIMI_ModManager.Avalonia.ViewModels.Items"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="GIMI_ModManager.Avalonia.Views.PresetsView"
+             x:DataType="vm:PresetsViewModel"
+             x:Name="Root">
+
+    <Grid RowDefinitions="Auto,Auto,*" Margin="24,16,24,0">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,4">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="模组预设" FontSize="24" FontWeight="Bold" />
+                <TextBlock Text="预设保存了一套“启用了哪些模组”的快照，随时一键还原。" FontSize="12"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+            <Button Grid.Column="1" Content="新建预设（保存当前）" Classes="accent" VerticalAlignment="Center"
+                    Command="{Binding CreatePresetCommand}" />
+        </Grid>
+
+        <ProgressBar Grid.Row="1" IsIndeterminate="True" IsVisible="{Binding IsBusy}" Margin="0,8" />
+
+        <TextBlock Grid.Row="2" IsVisible="{Binding IsEmpty}" Margin="0,40" HorizontalAlignment="Center"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                   Text="还没有预设。先启用一些模组，然后点“新建预设”保存当前状态。" />
+
+        <ScrollViewer Grid.Row="2" Margin="0,12,0,16">
+            <ItemsControl ItemsSource="{Binding Presets}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="items:PresetItem">
+                        <Border Margin="0,0,0,8" Padding="16,12" CornerRadius="8"
+                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="16" />
+                                        <Border IsVisible="{Binding IsReadOnly}" CornerRadius="4" Padding="6,1"
+                                                Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                                VerticalAlignment="Center">
+                                            <TextBlock Text="只读" FontSize="11"
+                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                                        <Run Text="{Binding ModCount}" /><Run Text=" 个模组 · " /><Run
+                                            Text="{Binding Created, StringFormat='{}{0:yyyy-MM-dd}'}" />
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                    <Button Content="应用" Classes="accent"
+                                            Command="{Binding #Root.((vm:PresetsViewModel)DataContext).ApplyPresetCommand}"
+                                            CommandParameter="{Binding}" />
+                                    <Button Content="重命名"
+                                            Command="{Binding #Root.((vm:PresetsViewModel)DataContext).RenamePresetCommand}"
+                                            CommandParameter="{Binding}" />
+                                    <Button Content="复制"
+                                            Command="{Binding #Root.((vm:PresetsViewModel)DataContext).DuplicatePresetCommand}"
+                                            CommandParameter="{Binding}" />
+                                    <Button Content="只读"
+                                            Command="{Binding #Root.((vm:PresetsViewModel)DataContext).ToggleReadOnlyCommand}"
+                                            CommandParameter="{Binding}" />
+                                    <Button Content="删除"
+                                            Command="{Binding #Root.((vm:PresetsViewModel)DataContext).DeletePresetCommand}"
+                                            CommandParameter="{Binding}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

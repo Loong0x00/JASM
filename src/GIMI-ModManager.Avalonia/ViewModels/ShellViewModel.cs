@@ -29,6 +29,12 @@ public partial class ShellViewModel : ViewModelBase
     private Task NavigateCharacters() => Navigation.NavigateToAsync<CharactersViewModel>();
 
     [RelayCommand]
+    private Task NavigatePresets() => Navigation.NavigateToAsync<PresetsViewModel>();
+
+    [RelayCommand]
+    private Task NavigateOverview() => Navigation.NavigateToAsync<ModsOverviewViewModel>();
+
+    [RelayCommand]
     private Task NavigateSettings() => Navigation.NavigateToAsync<SettingsViewModel>();
 
     [RelayCommand]

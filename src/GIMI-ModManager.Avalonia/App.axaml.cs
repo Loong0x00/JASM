@@ -46,10 +46,17 @@ public partial class App : Application
             var settings = Services.GetRequiredService<ILocalSettingsService>();
             var theme = await settings.ReadSettingAsync<string>("AppTheme", SettingScope.App);
             await Dispatcher.UIThread.InvokeAsync(() => ApplyTheme(theme));
+
+            // Apply the saved UI language before the game data loads, so the localizer picks the
+            // right Languages/<code> asset overrides for character names.
+            var lang = await settings.ReadSettingAsync<string>(ViewModels.SettingsViewModel.LanguageSettingKey,
+                SettingScope.App);
+            if (!string.IsNullOrWhiteSpace(lang))
+                await Services.GetRequiredService<ILanguageLocalizer>().SetLanguageAsync(lang);
         }
         catch (Exception e)
         {
-            Log.Warning(e, "Failed to apply saved theme");
+            Log.Warning(e, "Failed to apply saved theme/language");
         }
 
         await mainViewModel.InitializeAsync();
@@ -92,6 +99,9 @@ public partial class App : Application
         services.AddSingleton<IGameService, GameService>();
         services.AddSingleton<ModCrawlerService>();
         services.AddSingleton<ISkinManagerService, SkinManagerService>();
+        services.AddSingleton<ArchiveService>();
+        services.AddSingleton<ModInstallService>();
+        services.AddSingleton<GIMI_ModManager.Core.Services.ModPresetService.ModPresetService>();
 
         // App/UI services (Avalonia replacements for the WinUI shell services)
         services.AddSingleton<ILocalSettingsService, LocalSettingsService>();
@@ -108,6 +118,9 @@ public partial class App : Application
         services.AddTransient<StartupViewModel>();
         services.AddTransient<CharactersViewModel>();
         services.AddTransient<CharacterDetailsViewModel>();
+        services.AddTransient<ModPaneViewModel>();
+        services.AddTransient<PresetsViewModel>();
+        services.AddTransient<ModsOverviewViewModel>();
         services.AddTransient<SettingsViewModel>();
 
         return services.BuildServiceProvider();

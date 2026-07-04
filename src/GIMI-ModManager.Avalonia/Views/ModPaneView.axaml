@@ -1,0 +1,89 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GIMI_ModManager.Avalonia.ViewModels"
+             xmlns:items="using:GIMI_ModManager.Avalonia.ViewModels.Items"
+             mc:Ignorable="d" d:DesignWidth="380" d:DesignHeight="700"
+             x:Class="GIMI_ModManager.Avalonia.Views.ModPaneView"
+             x:DataType="vm:ModPaneViewModel">
+
+    <ScrollViewer>
+        <StackPanel Margin="16" Spacing="12">
+            <!-- Cover -->
+            <Border CornerRadius="8" ClipToBounds="True" Height="200"
+                    Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}">
+                <Panel>
+                    <Image Source="{Binding CoverImagePath, Converter={StaticResource PathToBitmap}}"
+                           Stretch="Uniform" />
+                    <TextBlock Text="无封面" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                               IsVisible="{Binding CoverImagePath, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                </Panel>
+            </Border>
+            <Button Content="设置封面图…" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                    Command="{Binding SetCoverImageCommand}" />
+
+            <TextBlock Text="{Binding ModName}" FontSize="18" FontWeight="Bold" TextWrapping="Wrap" />
+
+            <!-- Metadata -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="显示名称" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                <TextBox Text="{Binding CustomName}" Watermark="留空则使用文件夹名" />
+
+                <TextBlock Text="作者" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                <TextBox Text="{Binding Author}" />
+
+                <TextBlock Text="链接" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                    <TextBox Grid.Column="0" Text="{Binding ModUrl}" Watermark="https://…" />
+                    <Button Grid.Column="1" Content="打开" Command="{Binding OpenUrlCommand}" />
+                </Grid>
+
+                <TextBlock Text="描述" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                <TextBox Text="{Binding Description}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" />
+
+                <Button Content="保存信息" Classes="accent" HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center" Command="{Binding SaveMetadataCommand}" />
+            </StackPanel>
+
+            <!-- Actions -->
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="打开文件夹" Command="{Binding OpenFolderCommand}" />
+                <Button Content="复制路径" Command="{Binding CopyPathCommand}" />
+            </StackPanel>
+
+            <!-- Key swaps -->
+            <StackPanel Spacing="8" IsVisible="{Binding HasKeySwaps}">
+                <Separator />
+                <TextBlock Text="按键切换 (Key Swap)" FontWeight="SemiBold" />
+                <TextBlock Text="3Dmigoto 用于在游戏内循环切换皮肤的按键。" FontSize="12"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" TextWrapping="Wrap" />
+                <ItemsControl ItemsSource="{Binding KeySwaps}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="items:KeySwapItem">
+                            <Border Margin="0,0,0,8" Padding="10" CornerRadius="6"
+                                    Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{Binding SectionName}" FontWeight="SemiBold" FontSize="12"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8"
+                                          RowSpacing="4">
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Text="下一个" VerticalAlignment="Center"
+                                                   FontSize="12" />
+                                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ForwardKey}" FontSize="12" />
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="上一个" VerticalAlignment="Center"
+                                                   FontSize="12" />
+                                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding BackwardKey}" FontSize="12" />
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button Content="保存按键配置" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                        Command="{Binding SaveKeySwapsCommand}" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

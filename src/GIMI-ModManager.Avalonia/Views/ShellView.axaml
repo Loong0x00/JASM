@@ -28,6 +28,16 @@
                     <ui:SymbolIconSource Symbol="People" />
                 </ui:NavigationViewItem.IconSource>
             </ui:NavigationViewItem>
+            <ui:NavigationViewItem Content="预设" Tag="presets">
+                <ui:NavigationViewItem.IconSource>
+                    <ui:SymbolIconSource Symbol="Bookmarks" />
+                </ui:NavigationViewItem.IconSource>
+            </ui:NavigationViewItem>
+            <ui:NavigationViewItem Content="模组总览" Tag="overview">
+                <ui:NavigationViewItem.IconSource>
+                    <ui:SymbolIconSource Symbol="List" />
+                </ui:NavigationViewItem.IconSource>
+            </ui:NavigationViewItem>
         </ui:NavigationView.MenuItems>
 
         <ContentControl Content="{Binding Navigation.CurrentPage}" />

@@ -23,6 +23,8 @@ public class LinuxModToggleTests : IDisposable
     private string ModsFolder => Path.Combine(_root, "Mods");
     private string SettingsFolder => Path.Combine(_root, "Settings");
 
+    private SkinManagerService? _skinManager;
+
     private async Task<(GameService game, SkinManagerService skinManager)> InitAsync()
     {
         Directory.CreateDirectory(ModsFolder);
@@ -39,6 +41,7 @@ public class LinuxModToggleTests : IDisposable
         var crawler = new ModCrawlerService(logger, game);
         var skinManager = new SkinManagerService(game, logger, crawler);
         await skinManager.InitializeAsync(ModsFolder, null, null);
+        _skinManager = skinManager;
         return (game, skinManager);
     }
 
@@ -106,6 +109,7 @@ public class LinuxModToggleTests : IDisposable
 
     public void Dispose()
     {
+        _skinManager?.Dispose();
         Environment.SetEnvironmentVariable("XDG_DATA_HOME", null);
         try
         {

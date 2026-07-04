@@ -34,14 +34,21 @@ are re-implemented against Avalonia:
 | Theme              | `ElementTheme`                 | Avalonia `ThemeVariant`                        |
 | Open folder / URL  | `Launcher.LaunchFolderAsync`   | `Services/PlatformService` (`xdg-open`)        |
 
-### Linux fixes made in Core (`Entities/Mod.cs`)
+### Linux fixes made in Core
 
-- **Delete**: the Windows recycle-bin API (`Microsoft.VisualBasic.FileIO`) throws on Linux. `Delete`
-  now moves mods to the **freedesktop.org XDG Trash** on non-Windows platforms (still recoverable),
-  falling back to a permanent delete only if the trash is unusable.
-- **MoveTo**: `Path.GetPathRoot` can't detect a cross-mount move on Linux (every path shares `/`), so
-  `MoveTo` now catches the cross-device `IOException` and falls back to copy-then-delete. This fixes
-  importing mods extracted under `/tmp` onto a data disk.
+- **`Mod.Delete`**: the Windows recycle-bin API (`Microsoft.VisualBasic.FileIO`) throws on Linux.
+  `Delete` now moves mods to the **freedesktop.org XDG Trash** on non-Windows platforms (still
+  recoverable), falling back to a permanent delete only if the trash is unusable.
+- **`Mod.MoveTo`**: `Path.GetPathRoot` can't detect a cross-mount move on Linux (every path shares
+  `/`), so `MoveTo` now catches the cross-device `IOException` and falls back to copy-then-delete.
+  This fixes importing mods extracted under `/tmp` onto a data disk.
+- **`ArchiveService.ExtractArchive`**: selected the extractor by the *destination folder's* extension
+  instead of the archive's, so the SharpCompress path (used off Windows) silently extracted nothing.
+  On Windows this was masked by the bundled `7z.exe`. Now selects by the archive extension.
+- **`CharacterModList` FileSystemWatchers**: each character created inotify watchers that threw if
+  `fs.inotify.max_user_instances` was exhausted (common on Linux with a large roster). Watcher
+  creation now degrades gracefully — live folder-watching is skipped when the limit is hit, and the
+  manual Refresh button covers updates. Prevents startup crashes on constrained systems.
 
 ## Build & run
 
@@ -61,13 +68,33 @@ Settings live in `~/.local/share/JASM/` (same layout as the Windows build). Game
 
 ## Status
 
-Implemented (the core mod-management loop):
+Implemented:
 
-- First-time setup (pick game + Mods folder; XXMI/3Dmigoto folder optional on Linux)
-- Per-game character/weapon/object grid with images, Chinese names, mod-count badges, search
-- Per-character mod list with **enable/disable** (folder `DISABLED_` rename), add-mod (folder import),
-  delete-to-trash, open-folder, refresh
-- Settings: switch game, change folders, theme (system/light/dark)
+- **First-time setup** — pick game + Mods folder (XXMI/3Dmigoto folder optional on Linux)
+- **5 games** — Genshin (GIMI), Star Rail (SRMI), ZZZ (ZZMI), Wuthering Waves (WWMI), Endfield (EFMI);
+  in-app game switching (restarts to re-init the Core, matching the WinUI build)
+- **Character grid** — category tabs (character/weapon/NPC/object), element & class filters, sort,
+  search, mod-count badges, pin-to-top, hide/show characters, images + localized names
+- **Character details** — two-pane (mod list + detail pane) like the original:
+  - enable/disable (folder `DISABLED_` rename), multi-select batch enable/disable/delete/move,
+    per-mod search, add mod (folder), install from archive (.zip/.rar/.7z), delete-to-trash,
+    open-folder, refresh, hide character
+  - **ModPane**: cover image (view + set), edit name/author/url/description, **key-swap editor**,
+    copy path
+- **Mod installer** — from a folder or an archive, with a target-character picker (also global from
+  the grid)
+- **Presets** — create-from-current, apply, rename, duplicate, delete, read-only
+- **Mods overview** — flat list of every mod across characters, search, jump-to-character
+- **Settings** — switch game, change folders, export all mods, theme (system/light/dark),
+  language (中文/English)
 
-Not yet ported (future work): GameBanana in-app browser, auto-updater, mod presets, keyswap editor,
-command runner, per-mod image/metadata editing. These were out of scope for the initial Linux MVP.
+Deliberately deferred (heavy/niche, kept out to avoid over-building):
+
+- GameBanana in-app browser + auto mod-update checking (large, network-heavy)
+- Custom character creation UI (the "Others" catch-all category already handles unlisted entities)
+- App auto-updater, custom command runner, dedicated notifications-history page
+- Windows-only concerns that don't apply on Linux: UAC elevator/password manager, launching the
+  game/3Dmigoto `.exe` (games run via Proton on Linux)
+
+All the above features are covered by an xUnit integration suite (`JASM.Tests`) that runs on Linux:
+mod toggle, delete-to-trash, archive install, preset round-trip, export, and all-5-games loading.

@@ -10,6 +10,7 @@ public partial class ModRowItem : ObservableObject
 
     [ObservableProperty] private string _displayName;
     [ObservableProperty] private bool _isEnabled;
+    [ObservableProperty] private bool _isSelected;
     [ObservableProperty] private string? _author;
     [ObservableProperty] private string? _modUrl;
     [ObservableProperty] private DateTime? _dateAdded;
