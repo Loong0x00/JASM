@@ -98,3 +98,20 @@ Deliberately deferred (heavy/niche, kept out to avoid over-building):
 
 All the above features are covered by an xUnit integration suite (`JASM.Tests`) that runs on Linux:
 mod toggle, delete-to-trash, archive install, preset round-trip, export, and all-5-games loading.
+
+## Credits & License
+
+A community Linux port. Full lineage:
+
+- **Original JASM** by **Jorixon** — https://github.com/Jorixon/JASM
+- **Fork this port is built on** (adds more games + zh-cn localization) by **Moonholder** —
+  https://github.com/Moonholder/JASM
+- **This Linux / Avalonia frontend rewrite** — https://github.com/Loong0x00/JASM
+  (branch `linux-avalonia-port`)
+
+Licensed under **GNU GPL-3.0**, same as upstream JASM.
+
+The cross-platform logic library `GIMI-ModManager.Core` is reused from upstream (with the small
+Linux-compatibility patches noted above); only the presentation layer is new. All credit for the
+original design, bundled game-asset data, and the core mod-management logic goes to the upstream
+authors — this project only swaps the Windows-locked WinUI frontend for a cross-platform one.
