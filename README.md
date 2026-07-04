@@ -2,6 +2,31 @@
 
 > 原项目地址：[https://github.com/Jorixon/JASM](https://github.com/Jorixon/JASM)
 
+---
+
+## 🐧 Linux 原生版（本 fork 新增）
+
+**本 fork 把 JASM 的界面从 WinUI 3（锁死 Windows）用 [Avalonia](https://avaloniaui.net/) 重写了一份，可以在 Linux 上原生运行，无需 Wine。** 跨平台逻辑库 `GIMI-ModManager.Core` 原样复用，只替换了界面层。
+
+**构建 / 运行**（需 [.NET 10 SDK](https://dotnet.microsoft.com/download)）：
+
+```bash
+cd src/GIMI-ModManager.Avalonia
+dotnet run -c Release
+# 或产出独立可执行文件：
+dotnet publish -c Release -r linux-x64 --self-contained false -o out && ./out/JASM.Avalonia
+```
+
+- **功能**：5 个游戏（GIMI/SRMI/ZZMI/WWMI/EFMI）、游戏内切换、角色网格（分类/元素·武器筛选/排序/置顶/隐藏/搜索）、角色详情两栏（启用禁用·多选批量·移动·ModPane 封面/信息/keyswap 编辑）、Mod 安装器（文件夹 + .zip/.rar/.7z）、预设、模组总览、导出、主题、中/英语言。
+- **设置目录**：Linux 下在 `~/.local/share/JASM/`（不是 Windows 的 `%localappdata%\JASM`）。删掉即重走首次设置。
+- **Windows 专属、Linux 不适用的部分**：Elevator 提权进程、F10 向游戏发键刷新、UAC/管理员相关的 FAQ —— Linux 下启用/禁用直接改文件夹名（加/去 `DISABLED_` 前缀）即可，不需要 Elevator；删除走 XDG 回收站。
+- **未移植**（重/联网/niche）：GameBanana 内置浏览器、自动更新检查、自定义角色创建 UI、命令运行器。
+- 完整说明见 [`src/GIMI-ModManager.Avalonia/README.md`](src/GIMI-ModManager.Avalonia/README.md)。
+
+> ⚠️ **下方的原版说明是针对 Windows 的 WinUI 版本**（`.exe` 下载、Windows App SDK、Elevator、`%localappdata%` 路径、UIPI 拖拽问题等）。**Linux 用户请以上面这一段为准**，下面的功能/快捷键/FAQ 大多仍适用，但凡涉及 `.exe`/提权/Windows 路径的部分请忽略。
+
+---
+
 未处理的异常会写入 JASM 应用程序目录中的 Logs 文件夹中。
 
 ## 功能
@@ -29,6 +54,8 @@
 
 ## 下载
 最新版本可从 GameBanana 或者[Releases](https://github.com/Moonholder/JASM/releases) 页面下载。要启动应用程序，请在 ```JASM/``` 文件夹中运行 ```JASM - Just Another Skin Manager.exe```，建议为此创建一个快捷方式。
+
+> 🐧 以上是 **Windows 版**。**Linux 用户**：Releases 里的 `.exe` 只能在 Windows 跑；Linux 请见顶部「[Linux 原生版](#-linux-原生版本-fork-新增)」一节，从源码构建运行（无需 Wine）。
 
 ## 系统要求
 - Windows 10 1809 版本或更高版本（[据称](https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/))
