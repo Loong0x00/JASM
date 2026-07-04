@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:vm="using:GIMI_ModManager.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="GIMI_ModManager.Avalonia.Views.ShellView"
+             x:DataType="vm:ShellViewModel">
+
+    <ui:NavigationView x:Name="NavView"
+                       PaneDisplayMode="Left"
+                       IsSettingsVisible="True"
+                       IsBackButtonVisible="True"
+                       IsBackEnabled="{Binding Navigation.CanGoBack}"
+                       ItemInvoked="OnItemInvoked"
+                       BackRequested="OnBackRequested"
+                       AlwaysShowHeader="True">
+
+        <ui:NavigationView.PaneHeader>
+            <TextBlock Text="{Binding GameName}" FontWeight="SemiBold" Margin="4,8"
+                       TextTrimming="CharacterEllipsis" />
+        </ui:NavigationView.PaneHeader>
+
+        <ui:NavigationView.MenuItems>
+            <ui:NavigationViewItem Content="角色 / 模组" Tag="characters" IsSelected="True">
+                <ui:NavigationViewItem.IconSource>
+                    <ui:SymbolIconSource Symbol="People" />
+                </ui:NavigationViewItem.IconSource>
+            </ui:NavigationViewItem>
+        </ui:NavigationView.MenuItems>
+
+        <ContentControl Content="{Binding Navigation.CurrentPage}" />
+    </ui:NavigationView>
+</UserControl>

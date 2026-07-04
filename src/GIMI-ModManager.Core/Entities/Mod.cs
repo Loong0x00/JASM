@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using GIMI_ModManager.Core.Contracts.Entities;
@@ -37,18 +38,36 @@ public class Mod : IMod
         if (!Path.IsPathFullyQualified(absPath))
             throw new ArgumentException("Path must be absolute.", nameof(absPath));
 
+        var destination = Path.Combine(absPath, Name);
+
+        // On Windows, different path roots (drive letters) imply a cross-volume move that
+        // DirectoryInfo.MoveTo cannot perform, so fall back to copy+delete. On Linux every
+        // absolute path shares the "/" root, so GetPathRoot cannot detect a cross-mount move;
+        // instead we optimistically try MoveTo and fall back on the IOException it throws when
+        // source and destination live on different mount points (EXDEV).
         if (Path.GetPathRoot(absPath) != Path.GetPathRoot(FullPath))
         {
-            var newModDirectory = new DirectoryInfo(Path.Combine(absPath, Name));
-            RecursiveCopyTo(_modDirectory, newModDirectory);
-            _modDirectory.Delete(true);
-            _modDirectory = newModDirectory;
-
+            CopyThenDelete(destination);
             return;
         }
 
+        try
+        {
+            _modDirectory.MoveTo(destination);
+        }
+        catch (IOException)
+        {
+            // Cross-device rename (e.g. mods extracted under /tmp moved to a data disk).
+            CopyThenDelete(destination);
+        }
+    }
 
-        _modDirectory.MoveTo(Path.Combine(absPath, Name));
+    private void CopyThenDelete(string destination)
+    {
+        var newModDirectory = new DirectoryInfo(destination);
+        RecursiveCopyTo(_modDirectory, newModDirectory);
+        _modDirectory.Delete(true);
+        _modDirectory = newModDirectory;
     }
 
     public virtual IMod CopyTo(string absPath)
@@ -73,11 +92,77 @@ public class Mod : IMod
     {
         if (moveToRecycleBin)
         {
-            FileSystem.DeleteDirectory(FullPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
-            return;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                FileSystem.DeleteDirectory(FullPath, UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+                return;
+            }
+
+            // Windows' recycle bin API is unavailable off Windows. Use the freedesktop.org
+            // trash spec so deletes stay recoverable on Linux; fall back to a permanent
+            // delete only if the trash is unusable (e.g. on a different filesystem).
+            if (TryMoveToXdgTrash())
+                return;
         }
 
         _modDirectory.Delete(true);
+    }
+
+    private bool TryMoveToXdgTrash()
+    {
+        try
+        {
+            var dataHome = Environment.GetEnvironmentVariable("XDG_DATA_HOME");
+            if (string.IsNullOrWhiteSpace(dataHome))
+                dataHome = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    ".local", "share");
+
+            var trashDir = Path.Combine(dataHome, "Trash");
+            var filesDir = Path.Combine(trashDir, "files");
+            var infoDir = Path.Combine(trashDir, "info");
+            Directory.CreateDirectory(filesDir);
+            Directory.CreateDirectory(infoDir);
+
+            // Pick a name that does not collide with something already in the trash.
+            var baseName = Name;
+            var targetName = baseName;
+            var counter = 1;
+            while (Directory.Exists(Path.Combine(filesDir, targetName)) ||
+                   File.Exists(Path.Combine(filesDir, targetName)) ||
+                   File.Exists(Path.Combine(infoDir, targetName + ".trashinfo")))
+            {
+                targetName = $"{baseName}.{counter++}";
+            }
+
+            var trashInfo = "[Trash Info]\n" +
+                            $"Path={EscapeTrashPath(FullPath)}\n" +
+                            $"DeletionDate={DateTime.Now:yyyy-MM-ddTHH:mm:ss}\n";
+            File.WriteAllText(Path.Combine(infoDir, targetName + ".trashinfo"), trashInfo);
+
+            try
+            {
+                // A rename only works within the same filesystem; may throw EXDEV otherwise.
+                _modDirectory.MoveTo(Path.Combine(filesDir, targetName));
+            }
+            catch (IOException)
+            {
+                File.Delete(Path.Combine(infoDir, targetName + ".trashinfo"));
+                return false;
+            }
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static string EscapeTrashPath(string path)
+    {
+        // Per the trash spec the Path is percent-encoded but the '/' separators are preserved.
+        return string.Join('/', path.Split('/').Select(Uri.EscapeDataString));
     }
 
     private void RecursiveCopyTo(DirectoryInfo oldModDirectory, DirectoryInfo newModDirectory)

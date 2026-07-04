@@ -1,0 +1,21 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="GIMI_ModManager.Avalonia.App"
+             xmlns:local="using:GIMI_ModManager.Avalonia"
+             xmlns:sty="using:FluentAvalonia.Styling"
+             xmlns:conv="using:GIMI_ModManager.Avalonia.Converters"
+             RequestedThemeVariant="Default">
+
+    <Application.Resources>
+        <conv:PathToBitmapConverter x:Key="PathToBitmap" />
+    </Application.Resources>
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <sty:FluentAvaloniaTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+    </Application.Styles>
+</Application>

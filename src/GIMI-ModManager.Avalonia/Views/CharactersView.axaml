@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GIMI_ModManager.Avalonia.ViewModels"
+             xmlns:items="using:GIMI_ModManager.Avalonia.ViewModels.Items"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+             x:Class="GIMI_ModManager.Avalonia.Views.CharactersView"
+             x:DataType="vm:CharactersViewModel"
+             x:Name="Root">
+
+    <Grid RowDefinitions="Auto,*" Margin="24,16,24,0">
+        <!-- Toolbar -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,12">
+            <TextBox Grid.Column="0" Text="{Binding SearchText}" Watermark="搜索角色…"
+                     MaxWidth="320" HorizontalAlignment="Left" />
+            <CheckBox Grid.Column="1" Content="只看有模组的" IsChecked="{Binding OnlyWithMods}"
+                      VerticalAlignment="Center" Margin="12,0" />
+            <TextBlock Grid.Column="2" VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                <Run Text="共" /><Run Text="{Binding TotalMods}" /><Run Text=" 个模组" />
+            </TextBlock>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding Characters}" Margin="0,0,0,24">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="items:CharacterGridItem">
+                        <Button Padding="0" Margin="6" Background="Transparent" BorderThickness="0"
+                                Command="{Binding #Root.((vm:CharactersViewModel)DataContext).OpenCharacterCommand}"
+                                CommandParameter="{Binding}"
+                                ToolTip.Tip="{Binding DisplayName}">
+                            <Border Width="132" Height="188" CornerRadius="8" ClipToBounds="True"
+                                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1">
+                                <Grid RowDefinitions="*,Auto">
+                                    <Panel Grid.Row="0">
+                                        <Image Source="{Binding ImagePath, Converter={StaticResource PathToBitmap}}"
+                                               Stretch="UniformToFill" />
+                                        <!-- Mod count badge -->
+                                        <Border IsVisible="{Binding HasMods}"
+                                                Background="{DynamicResource AccentFillColorDefaultBrush}"
+                                                CornerRadius="10" Padding="7,2" Margin="6"
+                                                HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <TextBlock Text="{Binding ModCount}" FontSize="12" FontWeight="Bold"
+                                                       Foreground="White" />
+                                        </Border>
+                                    </Panel>
+                                    <Border Grid.Row="1" Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                            Padding="8,6">
+                                        <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis"
+                                                   HorizontalAlignment="Center" FontSize="13" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

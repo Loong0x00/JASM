@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GIMI_ModManager.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="620"
+             x:Class="GIMI_ModManager.Avalonia.Views.StartupView"
+             x:DataType="vm:StartupViewModel">
+
+    <ScrollViewer>
+        <Border Padding="40" MaxWidth="640" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Spacing="20">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="欢迎使用 JASM" FontSize="28" FontWeight="Bold" />
+                    <TextBlock Text="Just Another Skin Manager · Linux 原生版"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <TextBlock TextWrapping="Wrap" Margin="0,8,0,0"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Text="首次使用，请选择游戏并指定模组文件夹。JASM 只负责整理和启用/禁用模组，并不会向游戏注入内容 —— 注入由 XXMI / 3Dmigoto 加载器完成。" />
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="游戏" FontWeight="SemiBold" />
+                    <ComboBox ItemsSource="{Binding Games}" SelectedItem="{Binding SelectedGame}"
+                              HorizontalAlignment="Stretch" />
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="Mods 文件夹（必填）" FontWeight="SemiBold" />
+                    <TextBlock Text="XXMI 用来加载模组的文件夹，JASM 会在其中按角色整理模组。"
+                               FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <TextBox Grid.Column="0" Text="{Binding ModsFolderPath}"
+                                 Watermark="/path/to/XXMI/GIMI/Mods" IsReadOnly="True" />
+                        <Button Grid.Column="1" Content="浏览…" Command="{Binding BrowseModsFolderCommand}" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                    <TextBlock Text="XXMI / 3Dmigoto 文件夹（可选）" FontWeight="SemiBold" />
+                    <TextBlock Text="包含 d3dx.ini 的加载器目录。用于读取偏好设置，可留空。"
+                               FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <TextBox Grid.Column="0" Text="{Binding XxmiFolderPath}"
+                                 Watermark="/path/to/XXMI/GIMI" IsReadOnly="True" />
+                        <Button Grid.Column="1" Content="浏览…" Command="{Binding BrowseXxmiFolderCommand}" />
+                    </Grid>
+                </StackPanel>
+
+                <Button Content="完成设置并进入 JASM"
+                        Classes="accent"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        Command="{Binding SaveCommand}"
+                        IsEnabled="{Binding !IsBusy}"
+                        Margin="0,8,0,0" />
+
+                <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsBusy}" />
+            </StackPanel>
+        </Border>
+    </ScrollViewer>
+</UserControl>

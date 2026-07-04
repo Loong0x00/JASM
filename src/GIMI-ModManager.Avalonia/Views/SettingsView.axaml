@@ -1,0 +1,93 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GIMI_ModManager.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="GIMI_ModManager.Avalonia.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel">
+
+    <ScrollViewer>
+        <StackPanel Margin="24,16" Spacing="16" MaxWidth="760" HorizontalAlignment="Left">
+            <TextBlock Text="设置" FontSize="26" FontWeight="Bold" />
+
+            <!-- Game -->
+            <Border Classes="settingsCard" Padding="16" CornerRadius="8"
+                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="游戏" FontWeight="SemiBold" FontSize="16" />
+                    <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                        <Run Text="当前: " /><Run Text="{Binding GameName}" />
+                    </TextBlock>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <ComboBox Grid.Column="0" ItemsSource="{Binding Games}" SelectedItem="{Binding SelectedGame}"
+                                  HorizontalAlignment="Stretch" />
+                        <Button Grid.Column="1" Content="切换游戏" Command="{Binding SwitchGameCommand}" />
+                    </Grid>
+                    <TextBlock Text="切换游戏需要重启 JASM。" FontSize="12"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <!-- Folders -->
+            <Border Classes="settingsCard" Padding="16" CornerRadius="8"
+                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="文件夹" FontWeight="SemiBold" FontSize="16" />
+
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Mods 文件夹" />
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <TextBox Grid.Column="0" Text="{Binding ModsFolderPath}" IsReadOnly="True" />
+                            <Button Grid.Column="1" Content="更改…" Command="{Binding ChangeModsFolderCommand}" />
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="XXMI / 3Dmigoto 文件夹" />
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <TextBox Grid.Column="0" Text="{Binding XxmiFolderPath}" IsReadOnly="True" />
+                            <Button Grid.Column="1" Content="更改…" Command="{Binding ChangeXxmiFolderCommand}" />
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="打开 Mods 文件夹" Command="{Binding OpenModsFolderCommand}" />
+                        <Button Content="打开应用数据文件夹" Command="{Binding OpenAppDataFolderCommand}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Appearance -->
+            <Border Classes="settingsCard" Padding="16" CornerRadius="8"
+                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="外观" FontWeight="SemiBold" FontSize="16" />
+                    <Grid ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0" Text="主题" VerticalAlignment="Center" Margin="0,0,16,0" />
+                        <ComboBox Grid.Column="1" ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}"
+                                  HorizontalAlignment="Left" MinWidth="200" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- About -->
+            <Border Classes="settingsCard" Padding="16" CornerRadius="8"
+                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                <StackPanel Spacing="6">
+                    <TextBlock Text="关于" FontWeight="SemiBold" FontSize="16" />
+                    <TextBlock>
+                        <Run Text="JASM · Just Another Skin Manager (Linux/Avalonia 版) v" /><Run Text="{Binding AppVersion}" />
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" FontSize="12"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Text="原项目 by Jorixon (GPL-3.0)。UI 层已用 Avalonia 重写，无需 Wine 即可在 Linux 原生运行。" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
