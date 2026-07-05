@@ -24,6 +24,7 @@ public class AllGamesLoadTests : IDisposable
     [InlineData("WuWa")]
     [InlineData("ZZZ")]
     [InlineData("Endfield")]
+    [InlineData("NTE")]
     public async Task Game_loads_assets_and_yields_moddable_objects(string gameFolder)
     {
         var assetsDir = Path.Combine(_assetsRoot, gameFolder);

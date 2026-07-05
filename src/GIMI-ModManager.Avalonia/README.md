@@ -71,8 +71,11 @@ Settings live in `~/.local/share/JASM/` (same layout as the Windows build). Game
 Implemented:
 
 - **First-time setup** — pick game + Mods folder (XXMI/3Dmigoto folder optional on Linux)
-- **5 games** — Genshin (GIMI), Star Rail (SRMI), ZZZ (ZZMI), Wuthering Waves (WWMI), Endfield (EFMI);
-  in-app game switching (restarts to re-init the Core, matching the WinUI build)
+- **6 games** — Genshin (GIMI), Star Rail (SRMI), ZZZ (ZZMI), Wuthering Waves (WWMI), Endfield (EFMI),
+  Neverness to Everness (NEMI); in-app game switching (restarts to re-init the Core, matching the WinUI build).
+  Note: NTE is **not** in the official XXMI-Launcher (which only ships GIMI/SRMI/ZZMI/WWMI/EFMI/HIMI); its
+  3Dmigoto mods use the community [NEMI](https://github.com/CHN-HelloWorld/NEMI) framework. JASM is a generic
+  folder-based mod manager, so it can organize a game's mods regardless of official XXMI support.
 - **Character grid** — category tabs (character/weapon/NPC/object), element & class filters, sort,
   search, mod-count badges, pin-to-top, hide/show characters, images + localized names
 - **Character details** — two-pane (mod list + detail pane) like the original:

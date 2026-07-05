@@ -1,0 +1,13 @@
+{
+  "GameName": "Neverness to Everness",
+  "GameShortName": "NTE",
+  "RarityName": "Rarity",
+  "GameIcon": "Start_Game.png",
+  "GameBananaUrl": "https://gamebanana.com/games/23012",
+  "GameModelImporterUrl": "https://github.com/CHN-HelloWorld/NEMI",
+  "GameModelImporterName": "Neverness To Everness Model Importer",
+  "GameModelImporterShortName": "NEMI",
+  "GameModelImporterExeName": [
+    "3DMigoto Loader.exe"
+  ]
+}

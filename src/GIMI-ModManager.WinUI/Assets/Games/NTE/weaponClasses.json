@@ -1,0 +1,22 @@
+[
+  {
+    "InternalName": "Solid",
+    "DisplayName": "Solid"
+  },
+  {
+    "InternalName": "Liquid",
+    "DisplayName": "Liquid"
+  },
+  {
+    "InternalName": "Gas",
+    "DisplayName": "Gas"
+  },
+  {
+    "InternalName": "Plasma",
+    "DisplayName": "Plasma"
+  },
+  {
+    "InternalName": "Synthesis",
+    "DisplayName": "Synthesis"
+  }
+]

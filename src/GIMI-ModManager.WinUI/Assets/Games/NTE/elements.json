@@ -1,0 +1,32 @@
+[
+  {
+    "InternalName": "Cosmos",
+    "DisplayName": "Cosmos",
+    "Image": "Cosmos.svg"
+  },
+  {
+    "InternalName": "Anima",
+    "DisplayName": "Anima",
+    "Image": "Anima.svg"
+  },
+  {
+    "InternalName": "Incantation",
+    "DisplayName": "Incantation",
+    "Image": "Incantation.svg"
+  },
+  {
+    "InternalName": "Chaos",
+    "DisplayName": "Chaos",
+    "Image": "Chaos.svg"
+  },
+  {
+    "InternalName": "Psyche",
+    "DisplayName": "Psyche",
+    "Image": "Psyche.svg"
+  },
+  {
+    "InternalName": "Lakshana",
+    "DisplayName": "Lakshana",
+    "Image": "Lakshana.svg"
+  }
+]

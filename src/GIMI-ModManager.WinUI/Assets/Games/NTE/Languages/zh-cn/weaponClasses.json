@@ -1,0 +1,22 @@
+[
+  {
+    "InternalName": "Solid",
+    "DisplayName": "固态"
+  },
+  {
+    "InternalName": "Liquid",
+    "DisplayName": "液态"
+  },
+  {
+    "InternalName": "Gas",
+    "DisplayName": "气态"
+  },
+  {
+    "InternalName": "Plasma",
+    "DisplayName": "等离子"
+  },
+  {
+    "InternalName": "Synthesis",
+    "DisplayName": "聚合"
+  }
+]

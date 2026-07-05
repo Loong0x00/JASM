@@ -1,0 +1,32 @@
+[
+  {
+    "InternalName": "Cosmos",
+    "DisplayName": "光",
+    "Image": "Cosmos.svg"
+  },
+  {
+    "InternalName": "Anima",
+    "DisplayName": "灵",
+    "Image": "Anima.svg"
+  },
+  {
+    "InternalName": "Incantation",
+    "DisplayName": "咒",
+    "Image": "Incantation.svg"
+  },
+  {
+    "InternalName": "Chaos",
+    "DisplayName": "暗",
+    "Image": "Chaos.svg"
+  },
+  {
+    "InternalName": "Psyche",
+    "DisplayName": "魂",
+    "Image": "Psyche.svg"
+  },
+  {
+    "InternalName": "Lakshana",
+    "DisplayName": "相",
+    "Image": "Lakshana.svg"
+  }
+]

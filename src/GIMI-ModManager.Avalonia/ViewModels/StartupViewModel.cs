@@ -136,7 +136,8 @@ public sealed record GameOption(string InternalName, string DisplayName)
         new("Honkai", "崩坏：星穹铁道 (SRMI)"),
         new("WuWa", "鸣潮 (WWMI)"),
         new("ZZZ", "绝区零 (ZZMI)"),
-        new("Endfield", "明日方舟：终末地 (EFMI)")
+        new("Endfield", "明日方舟：终末地 (EFMI)"),
+        new("NTE", "异环 (NEMI)")
     ];
 
     public override string ToString() => DisplayName;

@@ -1,0 +1,300 @@
+[
+  {
+    "Keys": [
+      "Zero"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Zero.png",
+    "Rarity": 5,
+    "Element": "Cosmos",
+    "Class": "Solid",
+    "Region": [
+      "Eibon"
+    ],
+    "ModFilesName": "Zero",
+    "InGameSkins": [],
+    "InternalName": "Zero",
+    "DisplayName": "Zero"
+  },
+  {
+    "Keys": [
+      "Nanally"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Nanally.png",
+    "Rarity": 5,
+    "Element": "Anima",
+    "Class": "Plasma",
+    "Region": [
+      "Eibon"
+    ],
+    "ModFilesName": "Nanally",
+    "InGameSkins": [],
+    "InternalName": "Nanally",
+    "DisplayName": "Nanally"
+  },
+  {
+    "Keys": [
+      "Jiuyuan"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Jiuyuan.png",
+    "Rarity": 5,
+    "Element": "Anima",
+    "Class": "Solid",
+    "Region": [
+      "SterryExpress"
+    ],
+    "ModFilesName": "Jiuyuan",
+    "InGameSkins": [],
+    "InternalName": "Jiuyuan",
+    "DisplayName": "Jiuyuan"
+  },
+  {
+    "Keys": [
+      "Hathor"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Hathor.png",
+    "Rarity": 5,
+    "Element": "Lakshana",
+    "Class": "Plasma",
+    "Region": [
+      "SterryExpress"
+    ],
+    "ModFilesName": "Hathor",
+    "InGameSkins": [],
+    "InternalName": "Hathor",
+    "DisplayName": "Hathor"
+  },
+  {
+    "Keys": [
+      "Sakiri"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Sakiri.png",
+    "Rarity": 5,
+    "Element": "Incantation",
+    "Class": "Gas",
+    "Region": [
+      "Eibon"
+    ],
+    "ModFilesName": "Sakiri",
+    "InGameSkins": [],
+    "InternalName": "Sakiri",
+    "DisplayName": "Sakiri"
+  },
+  {
+    "Keys": [
+      "Fadia"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Fadia.png",
+    "Rarity": 5,
+    "Element": "Psyche",
+    "Class": "Synthesis",
+    "Region": [],
+    "ModFilesName": "Fadia",
+    "InGameSkins": [],
+    "InternalName": "Fadia",
+    "DisplayName": "Fadia"
+  },
+  {
+    "Keys": [
+      "Baicang"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Baicang.png",
+    "Rarity": 5,
+    "Element": "Incantation",
+    "Class": "Synthesis",
+    "Region": [],
+    "ModFilesName": "Baicang",
+    "InGameSkins": [],
+    "InternalName": "Baicang",
+    "DisplayName": "Baicang"
+  },
+  {
+    "Keys": [
+      "Daffodill"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Daffodill.png",
+    "Rarity": 5,
+    "Element": "Chaos",
+    "Class": "Liquid",
+    "Region": [
+      "Eibon"
+    ],
+    "ModFilesName": "Daffodill",
+    "InGameSkins": [],
+    "InternalName": "Daffodill",
+    "DisplayName": "Daffodill"
+  },
+  {
+    "Keys": [
+      "Chiz"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Chiz.png",
+    "Rarity": 5,
+    "Element": "Cosmos",
+    "Class": "Gas",
+    "Region": [
+      "Dvorak"
+    ],
+    "ModFilesName": "Chiz",
+    "InGameSkins": [],
+    "InternalName": "Chiz",
+    "DisplayName": "Chiz"
+  },
+  {
+    "Keys": [
+      "Haniel"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Haniel.png",
+    "Rarity": 4,
+    "Element": "Psyche",
+    "Class": "Solid",
+    "Region": [],
+    "ModFilesName": "Haniel",
+    "InGameSkins": [],
+    "InternalName": "Haniel",
+    "DisplayName": "Haniel"
+  },
+  {
+    "Keys": [
+      "Edgar"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Edgar.png",
+    "Rarity": 4,
+    "Element": "Cosmos",
+    "Class": "Liquid",
+    "Region": [
+      "Eibon"
+    ],
+    "ModFilesName": "Edgar",
+    "InGameSkins": [],
+    "InternalName": "Edgar",
+    "DisplayName": "Edgar"
+  },
+  {
+    "Keys": [
+      "Aurelia"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Aurelia.png",
+    "Rarity": 4,
+    "Element": "Psyche",
+    "Class": "Plasma",
+    "Region": [
+      "YubingStreet"
+    ],
+    "ModFilesName": "Aurelia",
+    "InGameSkins": [],
+    "InternalName": "Aurelia",
+    "DisplayName": "Aurelia"
+  },
+  {
+    "Keys": [
+      "Skia"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Skia.png",
+    "Rarity": 4,
+    "Element": "Lakshana",
+    "Class": "Gas",
+    "Region": [
+      "AnomalyBureau"
+    ],
+    "ModFilesName": "Skia",
+    "InGameSkins": [],
+    "InternalName": "Skia",
+    "DisplayName": "Skia"
+  },
+  {
+    "Keys": [
+      "Mint"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Mint.png",
+    "Rarity": 4,
+    "Element": "Anima",
+    "Class": "Liquid",
+    "Region": [
+      "AnomalyBureau"
+    ],
+    "ModFilesName": "Mint",
+    "InGameSkins": [],
+    "InternalName": "Mint",
+    "DisplayName": "Mint"
+  },
+  {
+    "Keys": [
+      "Adler"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Adler.png",
+    "Rarity": 4,
+    "Element": "Incantation",
+    "Class": "Synthesis",
+    "Region": [
+      "Eibon"
+    ],
+    "ModFilesName": "Adler",
+    "InGameSkins": [],
+    "InternalName": "Adler",
+    "DisplayName": "Adler"
+  },
+  {
+    "Keys": [
+      "Hotori"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Hotori.png",
+    "Rarity": 5,
+    "Element": "Cosmos",
+    "Class": "Solid",
+    "Region": [
+      "Eibon"
+    ],
+    "ModFilesName": "Hotori",
+    "InGameSkins": [],
+    "InternalName": "Hotori",
+    "DisplayName": "Hotori"
+  },
+  {
+    "Keys": [
+      "Lacrimosa"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Lacrimosa.png",
+    "Rarity": 5,
+    "Element": "Chaos",
+    "Class": "Liquid",
+    "Region": [],
+    "ModFilesName": "Lacrimosa",
+    "InGameSkins": [],
+    "InternalName": "Lacrimosa",
+    "DisplayName": "Lacrimosa"
+  },
+  {
+    "Keys": [
+      "Chaos"
+    ],
+    "ReleaseDate": "2026-04-23T00:00:00",
+    "Image": "Chaos.png",
+    "Rarity": 5,
+    "Element": "Lakshana",
+    "Class": "Synthesis",
+    "Region": [
+      "AnomalyBureau"
+    ],
+    "ModFilesName": "Chaos",
+    "InGameSkins": [],
+    "InternalName": "Chaos",
+    "DisplayName": "Chaos"
+  }
+]

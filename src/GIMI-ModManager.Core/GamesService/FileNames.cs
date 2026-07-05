@@ -23,5 +23,6 @@ public enum SupportedGames
     Honkai,
     WuWa,
     ZZZ,
-    Endfield
+    Endfield,
+    NTE
 }

@@ -4,7 +4,9 @@
 >
 > **传承**：原项目 [Jorixon/JASM](https://github.com/Jorixon/JASM)（GPL-3.0，已停更）→ 中文 fork [Moonholder/JASM](https://github.com/Moonholder/JASM)（本 fork 基于它，增加了游戏与中文）→ **本仓库：Avalonia 跨平台前端**。
 
-JASM 是一个**皮肤管理器**：帮你在磁盘上按角色整理、启用/禁用 3Dmigoto / XXMI 模组。它**不向游戏注入内容**——注入由 XXMI / 3Dmigoto 加载器完成。支持原神（GIMI）、崩坏：星穹铁道（SRMI）、绝区零（ZZMI）、鸣潮（WWMI）、明日方舟：终末地（EFMI）五个游戏。
+JASM 是一个**皮肤管理器**：帮你在磁盘上按角色整理、启用/禁用 3Dmigoto / XXMI 模组。它**不向游戏注入内容**——注入由 XXMI / 3Dmigoto 加载器完成。支持原神（GIMI）、崩坏：星穹铁道（SRMI）、绝区零（ZZMI）、鸣潮（WWMI）、明日方舟：终末地（EFMI）、异环（NEMI）六个游戏。
+
+> **关于「异环」与游戏支持**：异环（Neverness to Everness）是本 fork 新增的第 6 个游戏，但要说明——**它并未被官方 [XXMI-Launcher](https://github.com/SpectrumQT/XXMI-Launcher) 收录**（XXMI 目前只支持 GIMI/SRMI/ZZMI/WWMI/EFMI/HIMI）。异环的 3Dmigoto 改模走的是社区独立框架 **[NEMI](https://github.com/CHN-HelloWorld/NEMI)**（不属于 XXMI 项目），而且异环更主流的改模路线其实是 `.pak` / UE5 资源替换。之所以仍能把它加进来，是因为 **JASM 本身是一个通用的 mod 管理器**：它只负责「按角色整理 mod 文件夹 + 用 `DISABLED_` 前缀启停」，**并不依赖官方 XXMI 集成**。所以任何游戏——哪怕 XXMI 没收录——只要有对应的 3Dmigoto / 文件夹式 mod，把 Mods 文件夹指给它就能管。
 
 ---
 
@@ -23,7 +25,7 @@ dotnet publish -c Release -r linux-x64 --self-contained false -o out && ./out/JA
 
 **功能**
 
-- 5 个游戏（GIMI/SRMI/ZZMI/WWMI/EFMI）+ 游戏内切换（切换走进程重启，与原版行为一致）
+- 6 个游戏（GIMI/SRMI/ZZMI/WWMI/EFMI/NEMI）+ 游戏内切换（切换走进程重启，与原版行为一致）
 - 角色网格：分类标签（角色/武器/NPC/物件）、元素·武器筛选、排序、置顶、隐藏角色、mod 数徽章、搜索
 - 角色详情两栏（mod 列表 + ModPane）：启用/禁用（改 `DISABLED_` 前缀）、多选批量启用/禁用/删除/移动、页内搜索
 - ModPane：封面图查看+设置、名字/作者/链接/描述编辑、按键切换（keyswap `.ini`）编辑器、复制路径
