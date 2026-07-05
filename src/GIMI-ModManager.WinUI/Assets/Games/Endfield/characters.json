@@ -446,5 +446,58 @@
         "InGameSkins": [],
         "InternalName": "Rossi",
         "DisplayName": "Rossi"
-    }
+    },
+  {
+    "Keys": [
+      "Zhuang",
+      "Fangyi"
+    ],
+    "ReleaseDate": "2026-04-17T00:00:00",
+    "Image": "ZhuangFangyi.png",
+    "Rarity": 6,
+    "Element": "Electric",
+    "Class": "ArtsUnit",
+    "Region": [
+      "Hongshan"
+    ],
+    "ModFilesName": "ZhuangFangyi",
+    "InGameSkins": [],
+    "InternalName": "ZhuangFangyi",
+    "DisplayName": "Zhuang Fangyi"
+  },
+  {
+    "Keys": [
+      "Mi",
+      "Fu"
+    ],
+    "ReleaseDate": "2026-06-05T00:00:00",
+    "Image": "MiFu.png",
+    "Rarity": 6,
+    "Element": "Physical",
+    "Class": "Greatsword",
+    "Region": [
+      "Hongshan"
+    ],
+    "ModFilesName": "MiFu",
+    "InGameSkins": [],
+    "InternalName": "MiFu",
+    "DisplayName": "Mi Fu"
+  },
+  {
+    "Keys": [
+      "Camille"
+    ],
+    "ReleaseDate": "2026-06-26T00:00:00",
+    "Image": "Camille.png",
+    "Rarity": 6,
+    "Element": "Heat",
+    "Class": "Polearm",
+    "Region": [
+      "Seš'qa"
+    ],
+    "ModFilesName": "Camille",
+    "InGameSkins": [],
+    "InternalName": "Camille",
+    "DisplayName": "Camille"
+  }
 ]

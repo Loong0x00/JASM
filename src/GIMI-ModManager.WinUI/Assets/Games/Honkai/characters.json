@@ -1362,5 +1362,133 @@
     "InGameSkins": [],
     "InternalName": "Ashveil",
     "DisplayName": "Ashveil"
+  },
+  {
+    "Keys": [
+      "March",
+      "7th",
+      "(The",
+      "Hunt)"
+    ],
+    "ReleaseDate": "2024-07-31T00:00:00",
+    "Image": "March7Hunt.png",
+    "Rarity": 4,
+    "Element": "Imaginary",
+    "Class": "Hunt",
+    "Region": [
+      "Astral Express"
+    ],
+    "ModFilesName": "March7Hunt",
+    "InGameSkins": [],
+    "InternalName": "March7Hunt",
+    "DisplayName": "March 7th (The Hunt)"
+  },
+  {
+    "Keys": [
+      "Silver",
+      "Wolf",
+      "LV.999"
+    ],
+    "ReleaseDate": "2026-04-21T00:00:00",
+    "Image": "SilverWolfLV999.png",
+    "Rarity": 5,
+    "Element": "Imaginary",
+    "Class": "Elation",
+    "Region": [
+      "Stellaron Hunters"
+    ],
+    "ModFilesName": "SilverWolfLV999",
+    "InGameSkins": [],
+    "InternalName": "SilverWolfLV999",
+    "DisplayName": "Silver Wolf LV.999"
+  },
+  {
+    "Keys": [
+      "Evanescia"
+    ],
+    "ReleaseDate": "2026-05-13T00:00:00",
+    "Image": "Evanescia.png",
+    "Rarity": 5,
+    "Element": "Physical",
+    "Class": "Elation",
+    "Region": [
+      "Planarcadia"
+    ],
+    "ModFilesName": "Evanescia",
+    "InGameSkins": [],
+    "InternalName": "Evanescia",
+    "DisplayName": "Evanescia"
+  },
+  {
+    "Keys": [
+      "Mortenax",
+      "Blade"
+    ],
+    "ReleaseDate": "2026-06-01T00:00:00",
+    "Image": "MortenaxBlade.png",
+    "Rarity": 5,
+    "Element": "Fire",
+    "Class": "Nihility",
+    "Region": [
+      "Stellaron Hunters"
+    ],
+    "ModFilesName": "MortenaxBlade",
+    "InGameSkins": [],
+    "InternalName": "MortenaxBlade",
+    "DisplayName": "Mortenax Blade"
+  },
+  {
+    "Keys": [
+      "Himeko",
+      "•",
+      "Nova"
+    ],
+    "ReleaseDate": "2026-07-15T00:00:00",
+    "Image": "HimekoNova.png",
+    "Rarity": 5,
+    "Element": "Fire",
+    "Class": "Erudition",
+    "Region": [
+      "Astral Express"
+    ],
+    "ModFilesName": "HimekoNova",
+    "InGameSkins": [],
+    "InternalName": "HimekoNova",
+    "DisplayName": "Himeko • Nova"
+  },
+  {
+    "Keys": [
+      "Rin",
+      "Tohsaka"
+    ],
+    "ReleaseDate": "2026-07-24T00:00:00",
+    "Image": "RinTohsaka.png",
+    "Rarity": 5,
+    "Element": "Quantum",
+    "Class": "Erudition",
+    "Region": [
+      "Fate/stay night Collaboration"
+    ],
+    "ModFilesName": "RinTohsaka",
+    "InGameSkins": [],
+    "InternalName": "RinTohsaka",
+    "DisplayName": "Rin Tohsaka"
+  },
+  {
+    "Keys": [
+      "Gilgamesh"
+    ],
+    "ReleaseDate": "2026-07-24T00:00:00",
+    "Image": "Gilgamesh.png",
+    "Rarity": 5,
+    "Element": "Lightning",
+    "Class": "Destruction",
+    "Region": [
+      "Fate/stay night Collaboration"
+    ],
+    "ModFilesName": "Gilgamesh",
+    "InGameSkins": [],
+    "InternalName": "Gilgamesh",
+    "DisplayName": "Gilgamesh"
   }
 ]

@@ -1027,5 +1027,91 @@
     "InGameSkins": [],
     "InternalName": "NangongYu",
     "DisplayName": "Nangong Yu"
+  },
+  {
+    "Keys": [
+      "Norma"
+    ],
+    "ReleaseDate": "2026-07-08T00:00:00",
+    "Image": "Norma.png",
+    "Rarity": 5,
+    "Element": "Fire",
+    "Class": "Stun",
+    "Region": [
+      "External Strategy Department"
+    ],
+    "ModFilesName": "Norma",
+    "InGameSkins": [],
+    "InternalName": "Norma",
+    "DisplayName": "Norma"
+  },
+  {
+    "Keys": [
+      "Velina"
+    ],
+    "ReleaseDate": "2026-06-17T00:00:00",
+    "Image": "Velina.png",
+    "Rarity": 5,
+    "Element": "Wind",
+    "Class": "Anomaly",
+    "Region": [
+      "External Strategy Department"
+    ],
+    "ModFilesName": "Velina",
+    "InGameSkins": [],
+    "InternalName": "Velina",
+    "DisplayName": "Velina"
+  },
+  {
+    "Keys": [
+      "Pyrois"
+    ],
+    "ReleaseDate": "2026-06-17T00:00:00",
+    "Image": "Pyrois.png",
+    "Rarity": 5,
+    "Element": "Ether",
+    "Class": "Attack",
+    "Region": [
+      "Phaethon"
+    ],
+    "ModFilesName": "Pyrois",
+    "InGameSkins": [],
+    "InternalName": "Pyrois",
+    "DisplayName": "Pyrois"
+  },
+  {
+    "Keys": [
+      "Promeia"
+    ],
+    "ReleaseDate": "2026-05-06T00:00:00",
+    "Image": "Promeia.png",
+    "Rarity": 5,
+    "Element": "Ice",
+    "Class": "Anomaly",
+    "Region": [
+      "Krampus"
+    ],
+    "ModFilesName": "Promeia",
+    "InGameSkins": [],
+    "InternalName": "Promeia",
+    "DisplayName": "Promeia"
+  },
+  {
+    "Keys": [
+      "Starlight",
+      "Billy"
+    ],
+    "ReleaseDate": "2026-05-27T00:00:00",
+    "Image": "StarlightBilly.png",
+    "Rarity": 5,
+    "Element": "Physical",
+    "Class": "Rupture",
+    "Region": [
+      "CHares"
+    ],
+    "ModFilesName": "StarlightBilly",
+    "InGameSkins": [],
+    "InternalName": "StarlightBilly",
+    "DisplayName": "Starlight Billy"
   }
 ]
