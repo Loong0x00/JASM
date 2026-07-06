@@ -30,6 +30,7 @@ public partial class SettingsViewModel : ViewModelBase, INavigationAware
     private bool _suppressThemeApply;
 
     [ObservableProperty] private bool _isExporting;
+    [ObservableProperty] private bool _isNormalizingKeys;
 
     public IReadOnlyList<GameOption> Games { get; } = GameOption.All;
     public IReadOnlyList<string> Themes { get; } = new[] { "跟随系统", "浅色", "深色" };
@@ -218,6 +219,62 @@ public partial class SettingsViewModel : ViewModelBase, INavigationAware
         finally
         {
             IsExporting = false;
+        }
+    }
+
+    [RelayCommand]
+    private async Task NormalizeKeySwaps()
+    {
+        var confirm = await _dialogs.ShowConfirmAsync("规范化按键切换",
+            "把所有「无限制」的皮肤切换键改成「仅前台」(同一个键只切换当前在场的角色)?\n\n" +
+            "· 只动没加任何限制的 cycle 键;菜单键和作者自定义条件一律不碰。\n" +
+            "· 每个改动的 .ini 会先备份为 *.bak-keyswap。\n" +
+            "· 没有「角色在场」变量的 mod(如全局效果)会被跳过。",
+            "开始", "取消");
+        if (!confirm)
+            return;
+
+        IsNormalizingKeys = true;
+        try
+        {
+            var (totalKeys, modsChanged, modsScanned) = await Task.Run(async () =>
+            {
+                var keys = 0;
+                var changedMods = 0;
+                var scanned = 0;
+                foreach (var modList in _skinManagerService.CharacterModLists)
+                {
+                    foreach (var entry in modList.Mods)
+                    {
+                        var keySwaps = entry.Mod.KeySwaps;
+                        if (keySwaps is null)
+                            continue;
+                        scanned++;
+                        var changed = await keySwaps.NormalizeUnrestrictedToForegroundAsync().ConfigureAwait(false);
+                        if (changed > 0)
+                        {
+                            keys += changed;
+                            changedMods++;
+                        }
+                    }
+                }
+
+                return (keys, changedMods, scanned);
+            });
+
+            _notifications.ShowSuccess("规范化完成",
+                totalKeys == 0
+                    ? $"扫描 {modsScanned} 个 mod,没有需要改的「无限制」切换键。"
+                    : $"扫描 {modsScanned} 个 mod:{modsChanged} 个 mod 的 {totalKeys} 个切换键改为「仅前台」。备份为 *.bak-keyswap。");
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e, "Failed to normalize key swaps");
+            _notifications.ShowError("规范化失败", e.Message);
+        }
+        finally
+        {
+            IsNormalizingKeys = false;
         }
     }
 }

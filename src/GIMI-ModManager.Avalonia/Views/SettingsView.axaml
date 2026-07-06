@@ -59,6 +59,11 @@
                         <Button Content="导出全部模组…" Command="{Binding ExportModsCommand}"
                                 IsEnabled="{Binding !IsExporting}" />
                     </StackPanel>
+                    <Button Content="规范化按键切换(全部→仅前台)" Command="{Binding NormalizeKeySwapsCommand}"
+                            IsEnabled="{Binding !IsNormalizingKeys}" />
+                    <TextBlock Text="把「无限制」的皮肤切换键改为「仅前台」——同一个键只切换当前在场的角色。菜单/作者自定义条件不动;每个改动的 .ini 先备份为 *.bak-keyswap。"
+                               TextWrapping="Wrap" FontSize="12" Opacity="0.7" />
+                    <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsNormalizingKeys}" />
                     <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsExporting}" />
                 </StackPanel>
             </Border>

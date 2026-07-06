@@ -37,6 +37,9 @@ public static partial class IniConfigHelpers
             else if (IsIniKey(line, IniKeySwapSection.TypeIniKey))
                 skinModKeySwap.Type = GetIniValue(line);
 
+            else if (IsIniKey(line, IniKeySwapSection.ConditionIniKey))
+                skinModKeySwap.Condition = GetIniValue(line);
+
             else if (SwapvarRegex().IsMatch(line))
             {
                 var value = GetIniValue(line);

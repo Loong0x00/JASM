@@ -277,6 +277,117 @@ public partial class SkinModKeySwapManager(ISkinMod skinMod)
 
         // 插入新的key/back行
         InsertNewKeySwapLines(sectionLines, keySwap, insertIndex);
+
+        // 同步 condition 行(三档位开关的落点)
+        ApplyConditionLine(sectionLines, keySwap.Condition);
+    }
+
+    /// <summary>
+    /// 把 condition 行同步到目标值:null/空 = 移除(无限制);否则更新已有行或在节名后插入。
+    /// 这是"无限制/仅前台/禁用"三档在文件里的唯一落点。
+    /// </summary>
+    private static void ApplyConditionLine(List<string> sectionLines, string? condition)
+    {
+        var condIndex = -1;
+        for (var i = 1; i < sectionLines.Count; i++)
+        {
+            if (IniConfigHelpers.IsIniKey(sectionLines[i], IniKeySwapSection.ConditionIniKey))
+            {
+                condIndex = i;
+                break;
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(condition))
+        {
+            if (condIndex != -1)
+                sectionLines.RemoveAt(condIndex);
+            return;
+        }
+
+        var condLine = $"{IniKeySwapSection.ConditionIniKey} = {condition}";
+        if (condIndex != -1)
+            sectionLines[condIndex] = condLine;
+        else
+            sectionLines.Insert(1, condLine); // 紧跟节名
+    }
+
+    /// <summary>
+    /// 探测这个 mod 定义的"角色在场"变量(<c>$object_detected</c> 优先,其次 <c>$active</c>)。
+    /// 返回可用于 <c>condition</c> 的表达式(如 <c>$object_detected</c>);都没有则返回 null(此 mod 不支持"仅前台")。
+    /// </summary>
+    public async Task<string?> DetectActiveVariableAsync(CancellationToken cancellationToken = default)
+    {
+        var modDir = new DirectoryInfo(skinMod.FullPath);
+        if (!modDir.Exists) return null;
+
+        var hasActive = false;
+        foreach (var ini in modDir.GetFiles("*.ini", SearchOption.AllDirectories))
+        {
+            string text;
+            try { text = await File.ReadAllTextAsync(ini.FullName, cancellationToken).ConfigureAwait(false); }
+            catch { continue; }
+
+            if (text.Contains("$object_detected", StringComparison.OrdinalIgnoreCase))
+                return "$object_detected"; // 首选,直接返回
+            if (text.Contains("$active", StringComparison.OrdinalIgnoreCase))
+                hasActive = true;
+        }
+
+        return hasActive ? "$active == 1" : null;
+    }
+
+    /// <summary>
+    /// 把这个 mod 里所有"无限制"的皮肤 cycle 键归正为"仅前台"(加上角色在场 condition)。
+    /// 只动 <see cref="KeySwapState.Unrestricted"/> 的;<see cref="KeySwapState.Custom"/>(菜单/作者逻辑)一律不碰。
+    /// 写前对每个受影响的 ini 备份为 <c>&lt;name&gt;.bak-keyswap</c>。返回改动的键数。
+    /// </summary>
+    public async Task<int> NormalizeUnrestrictedToForegroundAsync(bool backup = true, CancellationToken cancellationToken = default)
+    {
+        var activeVar = await DetectActiveVariableAsync(cancellationToken).ConfigureAwait(false);
+        if (activeVar is null) return 0; // 此 mod 没有角色在场变量,给不了"仅前台"
+
+        var all = await ReadAllKeySwapConfigurations(cancellationToken: cancellationToken).ConfigureAwait(false);
+        var changedFiles = new Dictionary<string, List<KeySwapSection>>();
+        var changedCount = 0;
+
+        foreach (var (relPath, sections) in all)
+        {
+            var newSections = new List<KeySwapSection>();
+            var fileChanged = false;
+            foreach (var s in sections)
+            {
+                if (KeySwapStateHelper.Classify(s.Condition) == KeySwapState.Unrestricted)
+                {
+                    newSections.Add(s with { OriginalSectionName = s.SectionName, Condition = activeVar });
+                    fileChanged = true;
+                    changedCount++;
+                }
+                else
+                {
+                    newSections.Add(s with { OriginalSectionName = s.SectionName });
+                }
+            }
+
+            if (fileChanged)
+                changedFiles[relPath] = newSections;
+        }
+
+        if (changedFiles.Count == 0) return 0;
+
+        if (backup)
+        {
+            var modDir = new DirectoryInfo(skinMod.FullPath);
+            foreach (var relPath in changedFiles.Keys)
+            {
+                var src = Path.Combine(modDir.FullName, relPath);
+                var bak = src + ".bak-keyswap";
+                try { if (File.Exists(src) && !File.Exists(bak)) File.Copy(src, bak); } catch { /* best effort */ }
+            }
+        }
+
+        await SaveAllKeySwapConfigurations(changedFiles, cancellationToken).ConfigureAwait(false);
+        return changedCount;
     }
 
     /// <summary>

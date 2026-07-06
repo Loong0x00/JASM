@@ -35,6 +35,39 @@ public partial class ModPaneViewModel : ViewModelBase
     [ObservableProperty] private string? _description;
     [ObservableProperty] private bool _hasKeySwaps;
 
+    private string? _modActiveVar;
+    private bool _suppressModApply;
+
+    // One three-position switch for the whole mod (applies to all its switchable skin-cycle keys).
+    [ObservableProperty] private KeySwapState _modKeySwapState;
+    [ObservableProperty] private bool _hasSwitchableKeySwaps;
+    [ObservableProperty] private bool _modCanForeground;
+
+    public bool IsModUnrestricted
+    {
+        get => ModKeySwapState == KeySwapState.Unrestricted;
+        set { if (value && !_suppressModApply) _ = ApplyModStateAsync(KeySwapState.Unrestricted); }
+    }
+
+    public bool IsModForegroundOnly
+    {
+        get => ModKeySwapState == KeySwapState.ForegroundOnly;
+        set { if (value && !_suppressModApply) _ = ApplyModStateAsync(KeySwapState.ForegroundOnly); }
+    }
+
+    public bool IsModDisabled
+    {
+        get => ModKeySwapState == KeySwapState.Disabled;
+        set { if (value && !_suppressModApply) _ = ApplyModStateAsync(KeySwapState.Disabled); }
+    }
+
+    partial void OnModKeySwapStateChanged(KeySwapState value)
+    {
+        OnPropertyChanged(nameof(IsModUnrestricted));
+        OnPropertyChanged(nameof(IsModForegroundOnly));
+        OnPropertyChanged(nameof(IsModDisabled));
+    }
+
     public ObservableCollection<KeySwapItem> KeySwaps { get; } = new();
 
     public ModPaneViewModel(IFilePickerService filePicker, INotificationService notifications, ILogger logger)
@@ -77,10 +110,12 @@ public partial class ModPaneViewModel : ViewModelBase
         {
             if (mod.KeySwaps is not null)
             {
+                // The mod's on-screen-character variable ($object_detected/$active) — gates "仅前台".
+                _modActiveVar = await mod.KeySwaps.DetectActiveVariableAsync();
                 var all = await mod.KeySwaps.ReadAllKeySwapConfigurations();
                 foreach (var (iniFile, sections) in all)
                     foreach (var section in sections)
-                        KeySwaps.Add(new KeySwapItem(iniFile, section));
+                        KeySwaps.Add(new KeySwapItem(iniFile, section, _modActiveVar));
             }
         }
         catch (Exception e)
@@ -89,7 +124,72 @@ public partial class ModPaneViewModel : ViewModelBase
         }
 
         HasKeySwaps = KeySwaps.Count > 0;
+        RecomputeModKeySwapState();
         IsVisible = true;
+    }
+
+    private void RecomputeModKeySwapState()
+    {
+        var switchable = KeySwaps.Where(k => k.IsSwitchable).ToList();
+        HasSwitchableKeySwaps = switchable.Count > 0;
+        ModCanForeground = !string.IsNullOrEmpty(_modActiveVar);
+
+        // If every switchable key already agrees, show that; otherwise default to 无限制 (picking one unifies them).
+        var common = switchable.Count > 0 && switchable.All(k => k.State == switchable[0].State)
+            ? switchable[0].State
+            : KeySwapState.Unrestricted;
+
+        _suppressModApply = true;
+        ModKeySwapState = common;
+        _suppressModApply = false;
+    }
+
+    /// <summary>
+    /// Apply one three-position state (无限制 / 仅前台 / 禁用) to ALL of the mod's switchable skin-cycle keys
+    /// at once. Author/menu conditions are left alone. Each touched .ini is backed up as <c>*.bak-keyswap</c>.
+    /// </summary>
+    private async Task ApplyModStateAsync(KeySwapState state)
+    {
+        if (_mod?.KeySwaps is null)
+            return;
+
+        var byFile = new Dictionary<string, List<KeySwapSection>>();
+        foreach (var item in KeySwaps.Where(k => k.IsSwitchable))
+        {
+            item.State = state;
+            if (!byFile.TryGetValue(item.IniFile, out var list))
+            {
+                list = new List<KeySwapSection>();
+                byFile[item.IniFile] = list;
+            }
+
+            list.Add(item.ToSection());
+        }
+
+        _suppressModApply = true;
+        ModKeySwapState = state;
+        _suppressModApply = false;
+
+        if (byFile.Count == 0)
+            return;
+
+        try
+        {
+            foreach (var iniFile in byFile.Keys)
+            {
+                var path = Path.Combine(_mod.FullPath, iniFile);
+                var backup = path + ".bak-keyswap";
+                if (File.Exists(path) && !File.Exists(backup))
+                    File.Copy(path, backup);
+            }
+
+            await _mod.KeySwaps.SaveAllKeySwapConfigurations(byFile);
+        }
+        catch (Exception e)
+        {
+            _logger.Error(e, "Failed to apply key swap state for {Mod}", _mod.Name);
+            _notifications.ShowError("保存失败", e.Message);
+        }
     }
 
     [RelayCommand]
